@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 from kfs import enrich as enrich_mod
-from kfs import advisory, env, geocode, mfds, report
+from kfs import advisory, env, geocode, mfds, predict, report
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
@@ -86,8 +86,10 @@ def cmd_env(args):
     except Exception as exc:  # keep the last good file on a bad network
         print(f"env: fetch failed ({exc}); keeping previous data/env.json")
         return
+    predict.add_forecasts(payload)
     enrich_mod.save_json(ENV, payload)
-    print(f"env: {len(payload['bays'])} bays -> {ENV.relative_to(ROOT)}")
+    print(f"env: {len(payload['bays'])} bays, synthetic forecasts "
+          f"attached -> {ENV.relative_to(ROOT)}")
     if not enrich_mod.has_credentials():
         print("env: no Anthropic credential; skipping advisories")
         return

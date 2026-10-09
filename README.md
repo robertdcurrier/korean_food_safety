@@ -52,6 +52,15 @@ bilingual advisory per bay with an explicit confidence. It is a
 conditions index, not a toxin measurement, and it says so. Design
 and the production replacements are in `docs/ENVIRONMENT.md`.
 
+## The forecast slot (phase 3)
+
+Each bay card also carries a 14-day forecast of the conditions index
+with a p10–p90 band and a next-season outlook. Today it is filled by a
+**synthetic**, deterministic generator and badged as such everywhere.
+It exists to fix the contract a real predictive model must meet; the
+model replaces one function. Contract and rules: `docs/PREDICTION.md`.
+Roadmap for the team: `docs/Shellfish-Prediction-Roadmap.pdf`.
+
 ## Quick start (no keys needed)
 
 ```bash
@@ -101,11 +110,13 @@ docs/METHODOLOGY.md   the working method, step by step, with the prompts that wo
 docs/PROMPT_LOG.md    the actual prompts that produced this repo
 docs/MFDS_API.md      the API as observed: URL shape, codes, field dictionary
 docs/ENVIRONMENT.md   the PSP tab: data, index, what production replaces
+docs/PREDICTION.md    the forecast contract and the synthetic generator
 src/kfs/mfds.py       API client and record normalisation
 src/kfs/enrich.py     the one place Claude runs; schema and system prompt
 src/kfs/geocode.py    address splitting and cached Nominatim lookups
 src/kfs/env.py        Open-Meteo fetch and the PSP conditions index
 src/kfs/advisory.py   Claude's bilingual advisory per bay
+src/kfs/predict.py    the forecast contract and its synthetic filler
 src/kfs/report.py     merge and render
 src/kfs/cli.py        python -m kfs {fetch,enrich,geocode,build,all}
 templates/report.html the page: all UI strings in one KO/EN table

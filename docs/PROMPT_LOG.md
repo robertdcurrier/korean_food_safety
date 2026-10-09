@@ -100,6 +100,20 @@ decisions for the humans.
 Produced: PLAN.md phase 2, `env.py`, `advisory.py`, the second
 tab, tests, `docs/ENVIRONMENT.md`.
 
+## 6. A slot for a predictive model
+
+> For the next step, my colleague is interested in building a
+> predictive model for shellfish events. While that is too much for
+> this session, can we add output to the map data for each Bay with
+> a synthetic prediction. We'll also need to include this as
+> another training document, distinct from the primary one.
+
+Produced: PLAN.md phase 3, `predict.py` (the contract and a
+deterministic synthetic generator), tests, the forecast block on
+each bay card with a SYNTHETIC badge, `docs/PREDICTION.md`, and
+the second training document
+`docs/Shellfish-Prediction-Roadmap.pdf`.
+
 ## Prompts used inside the app
 
 The system prompt Claude receives for each batch of records is in

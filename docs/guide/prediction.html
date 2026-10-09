@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>From Index to Model: A Roadmap for Predicting Shellfish Toxin Events</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 20mm 17mm; }
+:root { --ink:#111; --ink2:#444; --ink3:#777; --rule:#ddd; --accent:#2a78d6; --soft:#eef4fc; --warn:#fff6e0; --warn-b:#e0a800; --good:#eaf7ea; --good-b:#2f8f2f; --code:#f4f4f2; }
+* { box-sizing:border-box; }
+body { font: 11pt/1.5 -apple-system, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; color:var(--ink); margin:0; }
+h1 { font-size:26pt; line-height:1.15; margin:0 0 6pt; letter-spacing:-.01em; }
+h2 { font-size:17pt; margin:0 0 10pt; padding-bottom:5pt; border-bottom:2px solid var(--accent); page-break-after:avoid; }
+h3 { font-size:12.5pt; margin:16pt 0 5pt; page-break-after:avoid; }
+h4 { font-size:11pt; margin:12pt 0 3pt; page-break-after:avoid; }
+p { margin:0 0 8pt; }
+ul, ol { margin:0 0 8pt; padding-left:20pt; }
+li { margin-bottom:3pt; }
+section { page-break-before:always; }
+section.cont { page-break-before:auto; }
+.cover { page-break-after:always; }
+.cover .kicker { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:10pt; }
+.cover .ko { font-size:15pt; color:var(--ink2); margin-top:4pt; }
+.cover .meta { color:var(--ink2); font-size:10.5pt; line-height:1.7; }
+.cover img { width:100%; border:1px solid var(--rule); border-radius:6px; margin:18pt 0; }
+.box { border-left:4px solid var(--accent); background:var(--soft); padding:9pt 12pt; margin:10pt 0; border-radius:0 6px 6px 0; page-break-inside:avoid; }
+.box.lesson { border-color:var(--good-b); background:var(--good); }
+.box.warn { border-color:var(--warn-b); background:var(--warn); }
+.box .t { font-weight:700; font-size:9.5pt; letter-spacing:.06em; text-transform:uppercase; color:var(--ink2); margin-bottom:3pt; }
+.box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom:0; }
+code, kbd { font: 9.5pt/1.4 "SF Mono", Menlo, Consolas, "D2Coding", monospace; background:var(--code); padding:1px 4px; border-radius:3px; }
+pre { font: 9.5pt/1.45 "SF Mono", Menlo, Consolas, "D2Coding", monospace; background:var(--code); border:1px solid var(--rule); border-radius:6px; padding:9pt 11pt; margin:6pt 0 10pt; white-space:pre-wrap; page-break-inside:avoid; }
+pre code { background:none; padding:0; }
+table { border-collapse:collapse; width:100%; margin:6pt 0 12pt; font-size:10pt; page-break-inside:avoid; }
+th, td { border:1px solid var(--rule); padding:5pt 7pt; vertical-align:top; text-align:left; }
+th { background:var(--code); font-weight:600; }
+td code { font-size:9pt; }
+.steps { counter-reset:step; list-style:none; padding:0; }
+.steps > li { counter-increment:step; position:relative; padding-left:30pt; margin-bottom:10pt; page-break-inside:avoid; }
+.steps > li::before { content:counter(step); position:absolute; left:0; top:1pt; width:21pt; height:21pt; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; font-size:10.5pt; text-align:center; line-height:21pt; }
+.steps > li > b:first-child { display:block; margin-bottom:2pt; }
+.check { color:var(--good-b); font-weight:600; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:12pt; margin:8pt 0 12pt; page-break-inside:avoid; }
+.card { border:1px solid var(--rule); border-radius:8px; padding:10pt 12pt; }
+.card h4 { margin-top:0; color:var(--accent); }
+.flow { display:grid; grid-template-columns:repeat(4,1fr); gap:6pt; margin:8pt 0 12pt; page-break-inside:avoid; }
+.flow div { border:1px solid var(--rule); border-radius:8px; padding:8pt; font-size:9.5pt; background:#fafaf8; }
+.flow b { display:block; color:var(--accent); font-size:10.5pt; margin-bottom:2pt; }
+img.shot { width:100%; border:1px solid var(--rule); border-radius:6px; margin:4pt 0 10pt; page-break-inside:avoid; }
+.small { font-size:9.5pt; color:var(--ink2); }
+.quote { border-left:3px solid var(--rule); margin:6pt 0 10pt; padding:4pt 10pt; color:var(--ink2); font-style:italic; page-break-inside:avoid; }
+.toc ol { columns:2; column-gap:24pt; }
+.toc li { break-inside:avoid; }
+dl.gloss { display:grid; grid-template-columns:max-content 1fr; gap:4pt 12pt; }
+dl.gloss dt { font-weight:600; } dl.gloss dd { margin:0; }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div>
+    <div class="kicker">Training document 2 · for the team</div>
+    <h1>From Index to Model<br>A Roadmap for Predicting Shellfish Toxin Events</h1>
+    <div class="ko">지수에서 모델로: 패류독소 발생 예측을 위한 로드맵</div>
+    <p style="margin-top:14pt;max-width:125mm;color:var(--ink2)">What the K-Food Safety Watch repository already gives you, what a real predictive model must produce, how to get from a weather heuristic to a backtested forecast, and which parts of that work belong to the scientist, the engineer and the AI.</p>
+    <img src="../screenshots/forecast_card.png" style="width:auto;max-height:118mm;display:block;margin:14pt auto" alt="A bay card with observed conditions, a synthetic 14-day forecast, and an AI note">
+  </div>
+  <div class="meta">
+    Written in Seoul, 9 October 2026, after the afternoon session with the colleague who will lead this work<br>
+    Bob Currier (OCEANCODA) with Claude Code<br>
+    Repository: <b>github.com/robertdcurrier/korean_food_safety</b> · this document is <code>docs/Shellfish-Prediction-Roadmap.pdf</code>; the primary guide is <code>docs/K-Food-Safety-Watch-Guide.pdf</code>
+  </div>
+</div>
+
+<section class="toc cont">
+<h2>Contents</h2>
+<ol>
+  <li>Why this document exists</li>
+  <li>What exists today: three phases in one afternoon</li>
+  <li>Interface first: the forecast contract</li>
+  <li>Define the target before touching data</li>
+  <li>Data inventory: labels and features</li>
+  <li>The modelling ladder</li>
+  <li>Evaluation is the scientist's job</li>
+  <li>Communicating a forecast</li>
+  <li>Where Claude helps, and where it does not</li>
+  <li>Team, roles and a twelve-week plan</li>
+  <li>Checklist before switching off the SYNTHETIC badge</li>
+  <li>Glossary</li>
+</ol>
+<div class="box">
+  <div class="t">Sixty-second version</div>
+  <p>The repository now has a slot for a forecast: a fixed JSON shape per bay, a page that draws it with an uncertainty band, and tests that enforce it. A synthetic generator fills the slot today and is badged SYNTHETIC everywhere. Your team's job is to replace one function with a model that has been backtested against real NIFS toxin history. Before any modelling, write a one-page target specification: what counts as an event, at which stations, with what lead time. Climb the ladder from climatology to a heuristic to logistic regression to gradient boosting, and never let a rung ship unless it beats the one below on the same backtest. The scientist owns the target, the labels and the evaluation; the engineer owns the data pipes; Claude Code builds and documents; the Claude API explains. The statistical model is ordinary statistics, not a language model.</p>
+</div>
+</section>
+
+<section>
+<h2>1. Why this document exists</h2>
+<p>The primary guide explains how the K-Food Safety Watch app was built and how to run it. It is for one person learning a working method. This document is different. It is for a team that will try to predict shellfish toxin events, and it is about the gap between the proof of concept on the page and a forecast someone could act on.</p>
+<p>The request that produced it, verbatim:</p>
+<div class="quote">"My colleague is interested in building a predictive model for shellfish events. While that is too much for this session, can we add output to the map data for each Bay with a synthetic prediction. We'll also need to include this as another training document, distinct from the primary one."</div>
+<p>Read it alongside three files in the repository: <code>docs/ENVIRONMENT.md</code> (the conditions index), <code>docs/PREDICTION.md</code> (the forecast contract), and <code>src/kfs/predict.py</code> (the synthetic filler). Nothing here requires you to read code, but every claim here can be checked against those files.</p>
+<div class="box lesson">
+  <div class="t">The lesson carried over from the primary guide</div>
+  <p>Own the question, not the keyboard. In a prediction project that means: the scientist writes the target specification, chooses the labels, and judges the backtest. Everything else can be delegated, including to Claude. Nothing in this document changes that; it just shows how much of the question there is to own.</p>
+</div>
+</section>
+
+<section>
+<h2>2. What exists today: three phases in one afternoon</h2>
+<table>
+  <tr><th style="width:14%">Phase</th><th style="width:30%">What it does</th><th>What it teaches</th></tr>
+  <tr><td>1 · Recalls</td><td>MFDS recalls and failed inspections, enriched by Claude, on a bilingual map and list.</td><td>Public API, one AI judgement step, deterministic code for the rest, a local HTML result, a repo that explains itself.</td></tr>
+  <tr><td>2 · Environment</td><td>Eight south-coast bays scored for bloom-favourable conditions from seven days of Open-Meteo sea temperature, rainfall and wind, with a Claude advisory per bay.</td><td>A heuristic index is a legitimate first model if it is explicit, tested and honest about what it is not. In October it says "low, out of season", which is the right answer.</td></tr>
+  <tr><td>3 · Forecast slot</td><td>Each bay carries a 14-day forecast of the index with a p10–p90 band and a next-season outlook, generated synthetically and badged as such.</td><td>Build the interface before the model. The page, the data file, the tests and the documentation now all exist. The model replaces one function.</td></tr>
+</table>
+<p>The screenshot on the cover is one bay card. Reading it top to bottom: observed conditions and a sparkline of the week's sea temperature; the five factors of the index; the forecast block with its dashed line, shaded band and SYNTHETIC badge; the Claude advisory, which deliberately does not see the synthetic forecast.</p>
+<div class="box warn">
+  <div class="t">What phase 3 is not</div>
+  <p>It is not a prediction. The synthetic generator blends today's observed sea temperature toward a climatology, lets rainfall relax toward its monthly mean, assumes wind persistence, and scores each future day with the same index as the tab. It will look plausible. It has no skill, and it has never been compared to a single real toxin event. That is why it is badged, why the model name is printed on every card, and why the advisory prompt is not allowed to read it.</p>
+</div>
+</section>
+
+<section>
+<h2>3. Interface first: the forecast contract</h2>
+<p>Every bay's forecast is one JSON object with a fixed shape. The page draws it, the tests enforce it, and the model you build must produce it.</p>
+<pre><code>{
+  "model": "synthetic-climatology-v0",
+  "issued_at": "2026-10-09",
+  "synthetic": true,
+  "horizon": [
+    {"date": "2026-10-10", "p10": 0.07, "p50": 0.14, "p90": 0.20, "level": "low"},
+    ... fourteen daily points ...
+  ],
+  "season_outlook": {
+    "first_favourable": "2027-02-23",
+    "peak": "2027-04-09",
+    "peak_index": 0.80,
+    "basis": "climatology only; illustrative"
+  }
+}</code></pre>
+<h3>Rules</h3>
+<ul>
+  <li><b>Quantiles, not a point.</b> <code>p10</code>, <code>p50</code>, <code>p90</code> are quantiles of the conditions index, or later of the event probability, in [0, 1]. A model that cannot express uncertainty emits three equal values and says so in <code>model</code>. The page will draw a line with no band, which is itself information.</li>
+  <li><b><code>level</code> derives from <code>p50</code></b> with the thresholds the tab already uses: 0.40 moderate, 0.65 elevated. When the target changes from "conditions" to "event probability", the thresholds change and the expert sets them.</li>
+  <li><b><code>synthetic</code> stays true</b> until a model with a documented backtest ships. The badge is driven by this flag alone.</li>
+  <li><b><code>model</code> names the exact version</b> and is printed on the card. Anyone looking at the page can tell which model produced what they see.</li>
+  <li><b>The page knows nothing about how the object was made.</b> That is the point. Replace <code>kfs.predict.forecast</code> and nothing else moves.</li>
+</ul>
+<div class="box lesson">
+  <div class="t">Why build the interface before the model</div>
+  <p>Because it lets five things proceed in parallel instead of in sequence: the page design, the documentation, the tests, the evaluation harness, and the data pipelines. It also forces a decision that modelling teams often postpone until it is painful: what, exactly, is the output? Fourteen daily quantiles per bay is a decision. Having made it in an afternoon, the team can argue about it on Monday with something concrete in front of them.</p>
+</div>
+<div class="box"><div class="t">One more detail worth copying</div><p>The first run of the synthetic generator reported "first favourable window: 12 November". A cooling autumn sea passes down through the same temperature band that a warming spring sea passes up through, and the index scored them the same. The fix was one line: require a rising trend. The lesson is not the line. It is that a scientist read the output and said "that is wrong" within a minute of seeing it, which no amount of code review would have caught.</p></div>
+</section>
+
+<section>
+<h2>4. Define the target before touching data</h2>
+<p>The single most consequential document the team will write is one page long and contains no code: the target specification. Until it exists, every hour spent on data or models is speculative.</p>
+<h3>Questions it must answer</h3>
+<ol class="steps">
+  <li><b>What is an event?</b> Candidates, from strictest to loosest: an NIFS closure announcement for a station (채취 금지); a PSP measurement above the regulatory limit of 0.8 mg/kg at a station; any PSP detection at a station; a red-tide bulletin naming <i>Alexandrium</i> in the area. Each gives a different number of positives per year, which drives everything downstream. Pick one primary and, if useful, one secondary.</li>
+  <li><b>At what spatial unit?</b> The NIFS monitoring station, not the bay. Bays are a presentation convenience. The eight hand-placed points on the map should become the actual station list with its history.</li>
+  <li><b>At what lead time?</b> "Will there be an event at station S within the next 7 days?" and "within 14 days" are different targets with different skill ceilings. Seven is operationally useful for sampling schedules. Fourteen is useful for industry. Start with one.</li>
+  <li><b>Probability or class?</b> Probability. Always. A class label hides the threshold decision inside the model; a probability leaves it with the people who bear the cost of being wrong.</li>
+  <li><b>What is the cost of each error?</b> A missed event may mean illness. A false alarm means lost harvest and lost trust in the tool. These costs are not symmetric and they are not the modeller's to set. Write them down, even roughly.</li>
+  <li><b>What would make you act?</b> If the forecast said 30% chance of an event at Jinhae in the next week, what would anyone do differently? If the answer is "nothing", the target is wrong or the users are.</li>
+</ol>
+<p>The scientist writes this page. Claude Code can help draft it, by reading the NIFS bulletin format and summarising what is actually recorded, but the decisions in it are not delegable.</p>
+</section>
+
+<section>
+<h2>5. Data inventory: labels and features</h2>
+<p>Verified during the session: Open-Meteo answers from Seoul without a key, there is no public API for NIFS toxin bulletins, and KHOA buoy data and the NIFS red-tide bulletin are on data.go.kr behind a free key. Everything else in this table is from general knowledge and must be checked by the team before being relied on.</p>
+<h3>Labels: where the truth comes from</h3>
+<table>
+  <tr><th style="width:28%">Source</th><th>What it gives</th><th style="width:30%">Access and caveats</th></tr>
+  <tr><td>NIFS 패류독소 발생현황 (shellfish toxin status)</td><td>Station, date, species, toxin type, concentration, closure status. The primary label.</td><td>Web pages, no API found. Request a historical extract from NIFS directly; a Korean team can. Expect format changes over years and station renames.</td></tr>
+  <tr><td>NIFS 적조속보 (red-tide bulletins)</td><td>Area, causative organism, cell density, water temperature, outlook. A secondary label and a feature.</td><td>data.go.kr API (dataset 15156746), free key. Text fields need parsing; Claude is good at that.</td></tr>
+  <tr><td>MFDS seafood recalls and inspection failures</td><td>Product-level enforcement that sometimes follows an event.</td><td>Already in the repo. A weak, lagged confirmation, not a label.</td></tr>
+</table>
+<h3>Features: what might predict it</h3>
+<table>
+  <tr><th style="width:28%">Source</th><th>Variables</th><th style="width:30%">Access and caveats</th></tr>
+  <tr><td>KHOA 바다누리 coastal stations</td><td>Sea temperature, salinity, tide, in near real time; history by station.</td><td>data.go.kr key. Station coverage of the small bays is uneven; check which stations are actually near which monitoring sites.</td></tr>
+  <tr><td>KMA ASOS / AWS</td><td>Rainfall, wind, sunshine hours, air temperature, at dense land stations with long history.</td><td>data.go.kr key or the KMA API hub. Long, clean history: the best-behaved source here.</td></tr>
+  <tr><td>River discharge (WAMIS)</td><td>Freshwater input to the bays, a nutrient and stratification driver.</td><td>National water resources portal. Only some bays have a gauged river.</td></tr>
+  <tr><td>Satellite chlorophyll (GOCI-II via KIOST; Copernicus Marine)</td><td>Phytoplankton biomass as a leading indicator.</td><td>Cloud gaps, coastal pixel contamination. Worth it, but as the second feature set, not the first.</td></tr>
+  <tr><td>Open-Meteo historical archive</td><td>Reanalysis weather back decades; marine history shorter.</td><td>Keyless. A fallback for gaps and the fastest way to build a first feature table before the Korean keys arrive.</td></tr>
+</table>
+<div class="box warn">
+  <div class="t">The trap that ruins most first attempts</div>
+  <p>Leakage. A closure announcement is dated when it is published, not when the water was sampled, and the sample lags the bloom. If the feature window reaches up to the announcement date, the model learns to see the bloom that caused the announcement, and its backtest looks wonderful. Anchor every feature window to the <i>sampling</i> date minus the lead time, and have the scientist confirm the lag structure before the first model is fitted.</p>
+</div>
+</section>
+
+<section>
+<h2>6. The modelling ladder</h2>
+<p>Climb it one rung at a time. Each rung must beat the one below on the same backtest, or it does not ship. Skipping rungs is how teams end up with an impressive model that cannot beat "it is April".</p>
+<ol class="steps">
+  <li><b>Rung 0: climatology and persistence.</b> Probability of an event at station S in week W equals the historical frequency for that station and week. And: whatever happened last week happens this week. These cost nothing and are surprisingly hard to beat for a seasonal phenomenon. They are the denominator for every skill score that follows.</li>
+  <li><b>Rung 1: the heuristic index.</b> What the environmental tab does today, evaluated honestly for the first time. Does a high index precede events? With what lead? This is where the scientist's thresholds get their first contact with data, and where several of them will change.</li>
+  <li><b>Rung 2: logistic regression on lagged features.</b> Per station or pooled with station effects. Features: sea temperature and its 7- and 14-day changes, rainfall sums, wind, day-of-year as sine and cosine, last year's event history. Interpretable, fast, and usually a real improvement over rung 1. Produces a probability natively.</li>
+  <li><b>Rung 3: gradient-boosted trees.</b> LightGBM or similar, same features plus interactions it finds itself, with quantile objectives to produce <code>p10</code> and <code>p90</code> honestly. Often the practical ceiling for a dataset of this size. Requires more discipline about leakage and cross-validation, not more data science.</li>
+  <li><b>Rung 4: sequence models.</b> Only if rung 3 has clearly plateaued and the team has several seasons of dense data. For most monitoring programmes this rung is never reached and should not be.</li>
+</ol>
+<p>At every rung, the output is written into the same contract from Section 3 and appears on the same page. The team can see rung 1 and rung 2 side by side on the cards if it wants to, by running two model versions and printing both names.</p>
+</section>
+
+<section>
+<h2>7. Evaluation is the scientist's job</h2>
+<p>A model is a claim about the future. Evaluation is how the claim is checked, and it is the part of the project that cannot be delegated to the people who built the model, nor to the AI that helped them.</p>
+<h3>How to backtest</h3>
+<ul>
+  <li><b>Leave one season out.</b> Train on all other years, forecast the held-out spring day by day as if live, score it. Repeat for every year. Random cross-validation on daily rows is meaningless for this problem; it leaks tomorrow into today.</li>
+  <li><b>Forecast at the lead time, from the data available then.</b> No feature may use anything dated after the issue date. Build the harness so this is enforced by construction, not by care.</li>
+  <li><b>Per station and pooled.</b> A model can be excellent at Jinhae and useless at Yeosu. Report both.</li>
+</ul>
+<h3>What to measure</h3>
+<table>
+  <tr><th style="width:26%">Metric</th><th>What it answers</th></tr>
+  <tr><td>Hit rate and false-alarm rate at the chosen threshold</td><td>Of real events, how many were flagged in time? Of flags, how many were wrong? The two numbers the harvesters and the regulators will ask about.</td></tr>
+  <tr><td>Brier score and skill against climatology</td><td>How good are the probabilities overall, and how much better than "it is April"?</td></tr>
+  <tr><td>Reliability diagram</td><td>When the model says 30%, does it happen about 30% of the time? If not, the probability is a decoration.</td></tr>
+  <tr><td>Lead-time curve</td><td>How does skill decay from 1 day ahead to 14? Tells you what the honest horizon is, which may be shorter than the contract's fourteen points.</td></tr>
+</table>
+<div class="box lesson">
+  <div class="t">The twenty-case habit, scaled up</div>
+  <p>The primary guide's Exercise 5 asks the scientist to label twenty records by hand and compare them with the model's answers. The same habit applies here. Before the first backtest number is believed, the scientist should take one past season, walk through it week by week with the forecast in one hand and the NIFS record in the other, and write down every disagreement and what caused it. Most model improvements come from that walk, not from the metrics table.</p>
+</div>
+</section>
+
+<section>
+<h2>8. Communicating a forecast</h2>
+<p>The page already draws the line the team must hold: observed conditions are one thing, forecasts are another, and neither is a toxin measurement or a safety claim. Keep every one of these when the real model arrives.</p>
+<ul>
+  <li><b>Bands, not lines.</b> The page draws <code>p10</code> to <code>p90</code> as a shaded band. A real model's band will be wider than the synthetic one, and that is a feature. A narrow band from a model with no skill is the most dangerous object in this project.</li>
+  <li><b>Provenance on the card.</b> Model name, issue date, data sources. Already printed; keep printing them.</li>
+  <li><b>The badge logic.</b> SYNTHETIC comes off only when the checklist in Section 11 is complete. Consider a second badge, EXPERIMENTAL, for the first real season.</li>
+  <li><b>Words the page may use.</b> Conditions, favourable, probability, monitor, outlook. Words it may not: safe, toxic, contaminated, clear. The advisory prompt in <code>src/kfs/advisory.py</code> already enforces this for Claude's text; the same list applies to humans writing labels.</li>
+  <li><b>Alignment with NIFS and MFDS.</b> The forecast supplements official monitoring; it never contradicts a published closure, and the page should link to the official bulletin wherever it shows a bay. A forecast tool that appears to second-guess the regulator will not survive its first disagreement.</li>
+</ul>
+<h3>When the real model ships, change the advisory</h3>
+<p>Today the Claude advisory deliberately does not see the forecast, because the forecast is invented. When a backtested model exists, add its output to the advisory input and add two sentences to the system prompt: what the model is, and how much weight to give it relative to observed conditions. Then re-run Exercise 5 on the advisories themselves.</p>
+</section>
+
+<section>
+<h2>9. Where Claude helps, and where it does not</h2>
+<div class="two">
+  <div class="card">
+    <h4>Claude Code, the builder</h4>
+    <p>Writes the data pipelines for each new source, with the same probe-first habit used for MFDS and Open-Meteo. Writes the feature code, the label-parsing code for NIFS bulletins, the backtest harness that enforces the no-future-data rule by construction, and the tests. Keeps <code>PLAN.md</code>, the docs and the prompt log current. Drafts the target specification from the bulletin format for the scientist to correct.</p>
+    <p>Prompt shape, unchanged: context, goal, constraints, "report back with a plan before changing code".</p>
+  </div>
+  <div class="card">
+    <h4>The Claude API, the worker</h4>
+    <p>Writes the bilingual advisories. Parses free-text fields in red-tide bulletins into structured records. Explains a forecast in plain language to a harvester or an official. Summarises a season's disagreements between model and record for the review meeting.</p>
+    <p>Does <b>not</b> make the forecast. The statistical model is ordinary statistics: scikit-learn, LightGBM, a few hundred lines. Asking a language model to guess next week's toxin probability from numbers is slower, costlier, unreproducible and unbacktestable. Use the right tool.</p>
+  </div>
+</div>
+<h3>Three prompts for the first week</h3>
+<ol>
+  <li><i>Read docs/PREDICTION.md and src/kfs/predict.py. Then read the NIFS shellfish toxin status page I am pasting below and tell me, as a table, exactly which fields it records per station and per date. Do not write code.</i></li>
+  <li><i>Draft a one-page target specification for predicting shellfish toxin events, using the six questions in Section 4 of the roadmap. Leave every decision as a blank for me to fill in, with the options and their consequences listed under each.</i></li>
+  <li><i>Build a backtest harness that takes a forecast function with the contract in PREDICTION.md and a labelled event table, runs leave-one-season-out, and reports hit rate, false-alarm rate, Brier skill against climatology and a reliability table. Make it impossible for a feature to see data after the issue date. Report back with a plan first.</i></li>
+</ol>
+</section>
+
+<section>
+<h2>10. Team, roles and a twelve-week plan</h2>
+<table>
+  <tr><th style="width:22%">Role</th><th>Owns</th><th style="width:30%">Typical person</th></tr>
+  <tr><td>Scientific lead</td><td>Target specification, label definitions, thresholds, the season walk-through, the decision to remove the SYNTHETIC badge.</td><td>The food-safety scientist.</td></tr>
+  <tr><td>Data engineer</td><td>Keys, pipelines, feature table, data quality, the repo.</td><td>The Gen MZ partner from the primary guide, working with Claude Code.</td></tr>
+  <tr><td>Modeller</td><td>Rungs 0 to 3, the backtest harness, calibration.</td><td>Someone with applied statistics; can be the engineer with Claude Code's help at rungs 0 to 2.</td></tr>
+  <tr><td>Domain reviewers</td><td>Reading forecasts against lived experience each week of the season.</td><td>NIFS or local fisheries contacts, harvesters.</td></tr>
+</table>
+<h3>Twelve weeks</h3>
+<table>
+  <tr><th style="width:16%">Weeks</th><th>Deliverable</th></tr>
+  <tr><td>1–2</td><td>Target specification signed by the scientific lead. data.go.kr keys. Historical NIFS extract requested. Station list replaces the eight hand-placed bays.</td></tr>
+  <tr><td>3–5</td><td>Label table and feature table, with the lag structure written down. Rung 0 baselines and the backtest harness. First honest number: how hard is this?</td></tr>
+  <tr><td>6–8</td><td>Rung 1 evaluated; thresholds revised. Rung 2 fitted and backtested. Season walk-through for one past year.</td></tr>
+  <tr><td>9–10</td><td>Rung 3 with quantile outputs. Reliability checked. Lead-time curve sets the honest horizon.</td></tr>
+  <tr><td>11–12</td><td>Best rung wired into the contract. Advisory prompt updated. Checklist in Section 11 worked through. Decision on the badge. Everything in the repo.</td></tr>
+</table>
+<p class="small">This is a plan for a first honest model, not a finished product. A second season of live forecasts, reviewed weekly, is what turns it into a tool.</p>
+</section>
+
+<section>
+<h2>11. Checklist before switching off the SYNTHETIC badge</h2>
+<ol>
+  <li>A written target specification exists and the scientific lead has signed it.</li>
+  <li>Labels come from NIFS records, with the sampling-to-publication lag documented.</li>
+  <li>Every feature is anchored to the issue date minus the lead time, enforced by the harness.</li>
+  <li>Leave-one-season-out backtest over at least three seasons, per station and pooled.</li>
+  <li>The model beats climatology and persistence on Brier skill, and the scientific lead has seen the reliability diagram.</li>
+  <li>Hit rate and false-alarm rate at the operating threshold are written down next to the cost of each error.</li>
+  <li>The season walk-through has been done for at least one held-out year and its disagreements are recorded.</li>
+  <li><code>model</code> names a version that is tagged in the repository.</li>
+  <li>The advisory prompt has been updated and its outputs reviewed for the forbidden words.</li>
+  <li>The page links to the official NIFS bulletin from every bay.</li>
+  <li>Someone outside the team has read the page and could not mistake a forecast for a measurement.</li>
+</ol>
+<div class="box lesson">
+  <div class="t">And then</div>
+  <p>Switch <code>synthetic</code> to <code>false</code>, consider an EXPERIMENTAL badge for the first live season, and keep the weekly walk-through going. The model is not the product. The habit of checking it is.</p>
+</div>
+</section>
+
+<section>
+<h2>12. Glossary</h2>
+<dl class="gloss">
+  <dt>Target</dt><dd>The thing being predicted, defined precisely: event type, place, lead time, probability.</dd>
+  <dt>Label</dt><dd>The recorded truth for past dates, used to train and test. Here, NIFS toxin records.</dd>
+  <dt>Feature</dt><dd>An input the model may use: sea temperature, rainfall, day of year.</dd>
+  <dt>Lead time</dt><dd>How far ahead the forecast looks. Skill falls as it grows.</dd>
+  <dt>Leakage</dt><dd>Letting the model see information from after the forecast date. Makes backtests lie.</dd>
+  <dt>Backtest</dt><dd>Forecasting the past as if live, then scoring against what happened.</dd>
+  <dt>Climatology</dt><dd>The long-run average for that place and time of year. The baseline every model must beat.</dd>
+  <dt>Persistence</dt><dd>Forecasting that tomorrow equals today. The other baseline.</dd>
+  <dt>Quantile (p10, p50, p90)</dt><dd>Values the outcome falls below 10%, 50% and 90% of the time. Together, an uncertainty band.</dd>
+  <dt>Brier score</dt><dd>Mean squared error of a probability forecast. Lower is better. Compare to climatology for skill.</dd>
+  <dt>Reliability</dt><dd>Whether "30%" events happen about 30% of the time.</dd>
+  <dt>Hit rate / false-alarm rate</dt><dd>Share of real events flagged; share of flags that were wrong.</dd>
+  <dt>Logistic regression</dt><dd>A simple, interpretable model that outputs a probability from weighted features.</dd>
+  <dt>Gradient boosting</dt><dd>An ensemble of small decision trees; often the practical ceiling on tabular data.</dd>
+  <dt>Contract</dt><dd>The fixed output shape every model version must produce. Section 3.</dd>
+  <dt>Synthetic</dt><dd>Generated to look plausible, with no claim to skill. Badged as such until proven otherwise.</dd>
+</dl>
+<p class="small" style="margin-top:18pt">Sources and attributions. Data on the page: 식품의약품안전처 식품안전나라; Open-Meteo (CC BY 4.0); KOSTAT boundaries via southkorea-maps; Esri World Street Map tiles; Leaflet. Model used for advisories: Claude Opus 5.5. This document was drafted by Claude Code from the session that built phases 2 and 3 and reviewed by its author. Data-source availability other than Open-Meteo, data.go.kr listings and the absence of a public NIFS toxin API was not verified in-session and must be checked by the team.</p>
+</section>
+</body>
+</html>

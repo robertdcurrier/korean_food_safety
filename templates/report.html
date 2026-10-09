@@ -125,6 +125,11 @@ main[hidden] { display: none; }
 .warnbox { border-left: 4px solid var(--sev-low); background: var(--surface-2); padding: 10px 14px; border-radius: 0 8px 8px 0; }
 .warnbox p { margin: 0 0 6px; } .warnbox p:last-child { margin: 0; }
 :root { --lvl-low: #0ca30c; --lvl-moderate: #fab219; --lvl-elevated: #ec835a; }
+.fc { margin-top: 8px; padding: 8px 10px; border: 1px dashed var(--border); border-radius: 8px; }
+.fc .k { color: var(--text-3); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; display: flex; justify-content: space-between; align-items: center; }
+.syn { font-size: 10.5px; font-weight: 700; letter-spacing: .05em; padding: 1px 7px; border-radius: 4px; background: var(--sev-low); color: #1a1a19; text-transform: uppercase; }
+.fc svg { width: 100%; height: 56px; display: block; margin: 4px 0; }
+.fc .small { line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -227,6 +232,7 @@ const GEO = /*__GEO__*/null;</script>
         adv: 'AI 설명', conf: '근거 신뢰도', confL: { low: '낮음', medium: '보통', high: '높음' },
         noAdv: 'AI 설명 없음 (Anthropic 키 없이 생성됨).', noData: '환경 데이터가 없습니다. python -m kfs env 를 실행하세요.',
         season: s => s ? 'PSP 시즌(2~6월) 중' : 'PSP 시즌(2~6월) 아님',
+        fc: { h: '14일 예측', syn: '합성 데이터', peak: '14일 최고(p50)', model: '모델', outlook: '다음 시즌 전망 (기후값 기준, 예시)', from: '여건 상승 시작', peakDay: '정점', band: '띠: p10–p90, 선: p50, 가로선: 관심 0.40 / 주의 0.65', note: '이 자리는 실제 예측 모델이 대체합니다. docs/PREDICTION.md 참조.' },
         foot: (e) => `관측·예보: ${e.source}. 조회 ${e.fetched_at.replace('T',' ').slice(0,16)}. 이 지수는 참고용 개념 검증이며 공식 판정이 아닙니다.`
       },
       generatedBy: '생성'
@@ -257,6 +263,7 @@ const GEO = /*__GEO__*/null;</script>
         adv: 'AI note', conf: 'Evidence confidence', confL: { low: 'Low', medium: 'Medium', high: 'High' },
         noAdv: 'No AI note (built without an Anthropic key).', noData: 'No environmental data. Run python -m kfs env.',
         season: s => s ? 'In PSP season (Feb–Jun)' : 'Outside PSP season (Feb–Jun)',
+        fc: { h: '14-day forecast', syn: 'Synthetic', peak: '14-day peak (p50)', model: 'Model', outlook: 'Next-season outlook (climatology, illustrative)', from: 'Conditions begin to rise', peakDay: 'Peak', band: 'Band p10–p90, line p50, rules at moderate 0.40 / elevated 0.65', note: 'A real predictive model replaces this slot. See docs/PREDICTION.md.' },
         foot: (e) => `Observations and forecasts: ${e.source}. Fetched ${e.fetched_at.replace('T',' ').slice(0,16)}. This index is an advisory proof of concept, not an official determination.`
       },
       generatedBy: 'Generated'
@@ -448,6 +455,27 @@ const GEO = /*__GEO__*/null;</script>
     const pts = series.map((d, i) => `${(i / (series.length - 1) * 100).toFixed(1)},${(30 - (d[1] - min) / span * 26).toFixed(1)}`).join(' ');
     return `<svg viewBox="0 0 100 36" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2" points="${pts}"/></svg>`;
   }
+  function fcChart(fc) {
+    const H = fc.horizon, W = 100, HT = 56, n = H.length;
+    const x = i => (i / (n - 1) * W).toFixed(1), y = v => (HT - 4 - v * (HT - 8)).toFixed(1);
+    const band = H.map((p, i) => `${x(i)},${y(p.p90)}`).concat(H.slice().reverse().map((p, i) => `${x(n - 1 - i)},${y(p.p10)}`)).join(' ');
+    const line = H.map((p, i) => `${x(i)},${y(p.p50)}`).join(' ');
+    const rule = v => `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="${css('--border')}" stroke-width="1" stroke-dasharray="2 2"/>`;
+    return `<svg viewBox="0 0 ${W} ${HT}" preserveAspectRatio="none" aria-hidden="true">${rule(.40)}${rule(.65)}<polygon points="${band}" fill="${css('--accent')}" opacity=".18"/><polyline points="${line}" fill="none" stroke="${css('--accent')}" stroke-width="2" stroke-dasharray="4 3"/></svg>`;
+  }
+  function fcBlock(b) {
+    const e = t().env, fc = b.forecast;
+    if (!fc) return '';
+    const peak = fc.horizon.reduce((m, p) => p.p50 > m.p50 ? p : m, fc.horizon[0]);
+    const so = fc.season_outlook || {};
+    return `<div class="fc">
+      <div class="k"><span>${esc(e.fc.h)}</span>${fc.synthetic ? `<span class="syn">${esc(e.fc.syn)}</span>` : ''}</div>
+      ${fcChart(fc)}
+      <div class="small">${esc(e.fc.peak)} <b>${peak.p50.toFixed(2)}</b> (${esc(e.lvl[peak.level])}, ${esc(peak.date)}) · ${esc(e.fc.model)} <code>${esc(fc.model)}</code></div>
+      <div class="small">${esc(e.fc.outlook)}: ${esc(e.fc.from)} <b>${esc(so.first_favourable || '–')}</b> · ${esc(e.fc.peakDay)} <b>${esc(so.peak || '–')}</b> (${(so.peak_index || 0).toFixed(2)})</div>
+      <div class="note" style="margin-top:4px">${esc(e.fc.band)} ${esc(e.fc.note)}</div>
+    </div>`;
+  }
   function bayCard(b) {
     const e = t().env, a = b.advisory;
     const advText = a ? (lang === 'en' ? a.advisory_en : a.advisory_ko) : '';
@@ -463,6 +491,7 @@ const GEO = /*__GEO__*/null;</script>
         <span>${esc(e.n.wave)} <b>${fmt(b.wave_now, ' m')}</b></span><span>${esc(e.n.air)} <b>${fmt(b.air_tmax, ' °C')}</b></span>
       </div>
       <div class="factors">${fac}</div>
+      ${fcBlock(b)}
       ${a ? `<div class="adv"><div class="k">${esc(e.adv)}</div>${esc(advText)}<div class="k" style="margin-top:6px">${esc(e.conf)}: ${esc(e.confL[a.confidence] || a.confidence)}</div><span class="small">${esc(why)}</span></div>` : `<p class="note">${esc(e.noAdv)}</p>`}
     </article>`;
   }
@@ -470,6 +499,7 @@ const GEO = /*__GEO__*/null;</script>
     const e = t().env, a = b.advisory;
     return `<b>${esc(lang === 'en' ? b.name_en : b.name_ko)}</b> · <span style="color:${lvlColor(b.level)}">●</span> ${esc(e.lvl[b.level])} ${b.score.toFixed(2)}<br>` +
       `${esc(e.n.sst)} ${fmt(b.sst_now, ' °C')} · ${esc(e.n.rain)} ${fmt(b.rain_7d, ' mm')} · ${esc(e.n.wind)} ${fmt(b.wind_7d_mean, ' m/s')}<br>` +
+      (b.forecast ? (() => { const pk = b.forecast.horizon.reduce((m, p) => p.p50 > m.p50 ? p : m, b.forecast.horizon[0]); return `${esc(e.fc.h)}${b.forecast.synthetic ? ' (' + esc(e.fc.syn) + ')' : ''}: ${esc(e.fc.peak)} ${pk.p50.toFixed(2)} ${esc(e.lvl[pk.level])}<br>`; })() : '') +
       (a ? `<small>${esc(lang === 'en' ? a.advisory_en : a.advisory_ko)}</small>` : '');
   }
   function ensureEnvMap() {

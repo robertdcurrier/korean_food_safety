@@ -133,3 +133,30 @@ province, with an explicit confidence and why. Cached per bay per day.
 What the real system replaces: Open-Meteo with KHOA buoys and KMA
 rainfall; the heuristic with NIFS 패류독소 and 적조 bulletins; the
 advisory rubric with the team's own thresholds. Architecture unchanged.
+
+## Phase 3 (2026-10-09, late afternoon): a slot for a predictive model
+
+The colleague wants to build a predictive model for shellfish toxin
+events. That is a project, not a session. What this session adds is
+the **interface**: a fixed data contract for a forecast per bay, a
+synthetic forecast that fills it, and the place on the page where a
+forecast is shown. When the real model exists it replaces one
+function and nothing else moves.
+
+Contract (per bay, see docs/PREDICTION.md):
+- `model`, `issued_at`, `synthetic` (true until a real model ships)
+- `horizon`: 14 daily points of `date`, `p10`, `p50`, `p90`, `level`
+- `season_outlook`: illustrative first date and peak date of the next
+  favourable window from climatology alone
+
+Synthetic generator: deterministic, seeded per bay, blends today's
+observed conditions toward a south-coast sea-temperature climatology
+and scores each day with the same index as the environmental tab.
+It is honest about being synthetic in the data, on the card, and in
+the popup.
+
+Second training document: docs/Shellfish-Prediction-Roadmap.pdf, for
+the colleague and the team he will lead. Distinct from the primary
+guide: what the target is, what data and labels exist, the modelling
+ladder from climatology to gradient boosting, evaluation as the
+expert's job, and where Claude helps and where it does not.

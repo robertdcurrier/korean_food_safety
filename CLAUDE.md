@@ -65,3 +65,6 @@ open output/index.html
   Keep that language in the template and in advisory.py's prompt.
   Thresholds in env.py are placeholders for the expert's rubric;
   change docs/ENVIRONMENT.md and tests/test_env.py with them.
+- `predict.py` is a contract with a synthetic filler. Keep the keys,
+  keep `synthetic: true` until a backtested model ships, and never
+  feed synthetic forecasts to the advisory prompt.
