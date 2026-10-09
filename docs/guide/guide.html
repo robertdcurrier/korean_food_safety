@@ -83,6 +83,7 @@ dl.gloss dt { font-weight:600; } dl.gloss dd { margin:0; }
   <li>Getting your two keys</li>
   <li>Working with Claude Code on this project</li>
   <li>Exercises, in order of difficulty</li>
+  <li>Beyond food safety: the same recipe in any field</li>
   <li>When something goes wrong</li>
   <li>Glossary</li>
 </ol>
@@ -249,7 +250,7 @@ summary_en:      Sungwon FI's aloe extract powder is being recalled
 
 <section>
 <h2>6. Setting up your computer</h2>
-<p>Allow one evening. Every step has a check so you know it worked before moving on. Commands are shown for macOS (Terminal) and Windows (PowerShell); use the column for your machine. If a step fails, Section 10 has the common causes, and this is also the chapter to hand to a partner.</p>
+<p>Allow one evening. Every step has a check so you know it worked before moving on. Commands are shown for macOS (Terminal) and Windows (PowerShell); use the column for your machine. If a step fails, Section 11 has the common causes, and this is also the chapter to hand to a partner.</p>
 
 <ol class="steps">
   <li><b>Open a terminal.</b> macOS: press <kbd>⌘ Space</kbd>, type <i>Terminal</i>, press Enter. Windows: press <kbd>⊞</kbd>, type <i>PowerShell</i>, press Enter. You will type commands into this window and press Enter after each one.</li>
@@ -385,7 +386,47 @@ python -m kfs build</code></pre>
 </section>
 
 <section>
-<h2>10. When something goes wrong</h2>
+<h2>10. Beyond food safety: the same recipe in any field</h2>
+<p>Nothing in the method is about food. Strip the nouns out of this repository and what remains is a recipe that any subject-matter expert can follow with any public data source. It has five ingredients:</p>
+<ol>
+  <li><b>A public API the expert already knows about.</b> Every field has one. The expert's advantage is knowing which of the hundreds of datasets actually matters, and what the field names mean.</li>
+  <li><b>One judgement task that only the expert can specify and check.</b> Translate, classify, grade, flag, summarise. This is the only place the Claude API runs, and it is where the expert's rubric lives.</li>
+  <li><b>Deterministic code, with tests, for everything else.</b> Parsing, joining, geocoding, drawing. Free, fast, verifiable.</li>
+  <li><b>A single local HTML result.</b> Nothing to deploy, nothing to pay for, easy to send to a colleague.</li>
+  <li><b>A repository that explains itself.</b> Plan, standards, method, prompt log, committed results. The repo is the teaching artefact; the app is the evidence.</li>
+</ol>
+
+<h3>The same shape in other fields</h3>
+<table>
+  <tr><th style="width:17%">Expert</th><th style="width:33%">Public API (all free, most need no key)</th><th>The one judgement step for Claude</th><th style="width:16%">Local HTML result</th></tr>
+  <tr><td>Botanist, ecologist</td><td>GBIF occurrence API; iNaturalist observations</td><td>Flag records whose location, date or habitat are implausible for the species; summarise what is unusual, in two languages</td><td>Map of sightings with an "needs checking" layer</td></tr>
+  <tr><td>Marine biologist</td><td>OBIS occurrences; NOAA NDBC buoy data</td><td>Classify strandings or sightings by likely cause from free-text notes; grade confidence</td><td>Coastal map with a timeline</td></tr>
+  <tr><td>Epidemiologist, public-health officer</td><td>KDCA or WHO outbreak notices; national open-data portals</td><td>Extract pathogen, setting, exposure route and severity from narrative reports into fixed fields</td><td>Searchable outbreak table and map</td></tr>
+  <tr><td>Chemist, toxicologist</td><td>PubChem; EPA CompTox; ECHA</td><td>Translate regulatory text into a hazard class and a plain-language one-liner per substance</td><td>Filterable substance list</td></tr>
+  <tr><td>Agronomist</td><td>KMA or NOAA weather; FAO crop data; national pest alerts</td><td>Turn pest and weather bulletins into a risk level per crop and region, with a reason</td><td>Regional risk map by week</td></tr>
+  <tr><td>Veterinarian</td><td>WOAH animal-disease events; national livestock portals</td><td>Classify disease events by transmission risk and trade impact; bilingual summary</td><td>Event map and digest</td></tr>
+</table>
+<p class="small">In every row the expert supplies the categories, the grading rubric and the twenty-record evaluation from Exercise 5. The partner supplies the terminal. Claude Code supplies the rest.</p>
+
+<h3>What you would actually change in this repository</h3>
+<table>
+  <tr><th style="width:34%">File</th><th>Change</th></tr>
+  <tr><td><code>src/kfs/mfds.py</code></td><td>Replace with a client for your API: the URL shape, paging, and a <code>normalize()</code> that maps its field names onto a clean record. Probe it with <code>curl</code> first, exactly as in Section 5.</td></tr>
+  <tr><td><code>src/kfs/enrich.py</code></td><td>Rewrite the <code>SYSTEM</code> prompt and the output schema for your judgement task. Your categories, your rubric, your two languages or one.</td></tr>
+  <tr><td><code>templates/report.html</code></td><td>Change the label table at the top and whatever the map and chart should show. Keep the structure.</td></tr>
+  <tr><td><code>src/kfs/geocode.py</code></td><td>Keep if your records have addresses; drop if they already have coordinates, as most biodiversity APIs do.</td></tr>
+  <tr><td><code>PLAN.md</code>, <code>CLAUDE.md</code>, <code>docs/</code></td><td>Rewrite the plan first, keep the standards, start a fresh prompt log.</td></tr>
+  <tr><td>Everything else</td><td>Unchanged: the CLI, the caching, the no-keys path, the tests pattern, the build step, this guide's structure.</td></tr>
+</table>
+
+<div class="box lesson">
+  <div class="t">The prompt that starts the next project</div>
+  <p>Open Claude Code in a clone of this repository and say: <i>"I am a [your field] scientist. I want to build the same kind of tool as this repository, but for [your data source], where the judgement task is [one sentence]. Read PLAN.md, CLAUDE.md and docs/METHODOLOGY.md, then probe the new API with curl, show me real records, and report back with a plan before changing anything."</i> That is the whole briefing. It took Section 5 of this guide to explain why it works; it takes thirty seconds to type.</p>
+</div>
+</section>
+
+<section>
+<h2>11. When something goes wrong</h2>
 <table>
   <tr><th style="width:38%">Symptom</th><th>Likely cause and fix</th></tr>
   <tr><td><code>command not found: python</code> or <code>git</code> or <code>claude</code></td><td>Not installed, or the terminal was open before you installed it. Close and reopen the terminal. On Windows make sure Python was installed with "Add to PATH".</td></tr>
@@ -403,7 +444,7 @@ python -m kfs build</code></pre>
 </section>
 
 <section>
-<h2>11. Glossary</h2>
+<h2>12. Glossary</h2>
 <dl class="gloss">
   <dt>Terminal</dt><dd>A window where you type commands instead of clicking. Terminal on macOS, PowerShell on Windows.</dd>
   <dt>Repository (repo)</dt><dd>A project folder whose entire history is tracked by Git. <code>git clone</code> copies one to your machine.</dd>

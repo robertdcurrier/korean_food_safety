@@ -16,7 +16,8 @@ process is the lesson; the app is the evidence.
 **New to all of this?** Start with the step-by-step guide for
 non-developers: [`docs/K-Food-Safety-Watch-Guide.pdf`](docs/K-Food-Safety-Watch-Guide.pdf).
 It explains the two Claudes, walks through setup on macOS and
-Windows, and shows how to get both keys. Source: `docs/guide/guide.html`;
+Windows, and shows how to get both keys. Its last chapters show how the
+same recipe applies to any field with a public API and an expert. Source: `docs/guide/guide.html`;
 regenerate with headless Chrome (see the end of `docs/METHODOLOGY.md`).
 
 ![Report, Korean](docs/screenshots/report_ko.png)
