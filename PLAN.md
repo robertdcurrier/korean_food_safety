@@ -92,7 +92,44 @@ so the first `python -m kfs all` works within minutes of cloning.
       top with automatic fallback. OSM tiles returned 403 from a
       file:// page; CARTO now needs a key.
 - [x] Model: claude-opus-5-5 by default, overridable with KFS_MODEL.
+- [x] Anthropic key on the demo machine (seven-day key, 2026-10-09).
 - [ ] Personal MFDS key: needed for the full dataset in the
       committed example output.
-- [ ] Anthropic key on the demo machine: needed for the committed
-      enrichment.
+
+## Phase 2 (2026-10-09, afternoon): environmental layer, PSP proof of concept
+
+Asked for by the colleague, who will lead a team integrating
+environmental data with what MFDS already supplies. Decisions made
+with him in the room: no new keys, eight south-coast bays, the
+paralytic shellfish poisoning (PSP) spring window only.
+
+What it is: a second tab, "환경 조건 / Environmental conditions", that
+shows for eight shellfish-producing bays whether current weather and
+sea conditions are favourable for an Alexandrium bloom. It is a
+conditions index, not a toxicity measurement, and every label says so.
+
+Source for the demo: Open-Meteo (free, keyless, CC BY 4.0). Hourly
+sea-surface temperature and wave height from its marine API; rainfall,
+wind and air temperature from its forecast API; seven days of history.
+Verified live from Seoul before design: complete data for Jinhae Bay.
+
+Bays: 진해만, 마산만, 거제, 통영, 고성 자란만, 사천만, 남해 강진만,
+여수 가막만. Coordinates are approximate bay centres; the colleague
+corrects them.
+
+Index (deterministic, in code, tested; a heuristic for a POC):
+- sea temperature in the Alexandrium window (8–18 °C, best 12–16)
+- seven-day warming trend
+- seven-day rainfall (runoff, nutrients)
+- seven-day mean wind (calm water stratifies)
+- month (PSP season February–June)
+Weighted to 0–1; levels low / moderate / elevated. In October the
+honest answer is "low, out of season", and the page says that.
+
+Claude's one step: for each bay, a short bilingual advisory that
+combines the index with any seafood records from MFDS in the same
+province, with an explicit confidence and why. Cached per bay per day.
+
+What the real system replaces: Open-Meteo with KHOA buoys and KMA
+rainfall; the heuristic with NIFS 패류독소 and 적조 bulletins; the
+advisory rubric with the team's own thresholds. Architecture unchanged.

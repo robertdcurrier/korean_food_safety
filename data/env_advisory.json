@@ -1,0 +1,74 @@
+{
+ "jinhae": {
+  "id": "jinhae",
+  "advisory_ko": "진해만의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 23.8°C가 지난 7일간 0.8°C 내려갔고 강수량은 1.0mm였습니다. 지금은 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정값이 아니라 Alexandrium 증식에 유리한 여건을 나타낼 뿐입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Jinhae Bay's PSP conditions index is 0.13 (low): sea temperature is 23.8°C, down 0.8°C over 7 days, with 1.0 mm of rain. It is outside the February–June PSP season, and this index reflects bloom-favourable conditions, not toxin levels. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 기반 대리지표만 있고 이를 뒷받침하는 식약처 기록이 없습니다.",
+  "confidence_why_en": "Based on a weather and sea-temperature proxy alone, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "masan": {
+  "id": "masan",
+  "advisory_ko": "마산만의 PSP 발생 여건 지수는 0.19(낮음)로, 수온 23.7°C(7일간 0.8°C 하강), 7일 강수량 6.5mm, 평균 풍속 3.1m/s입니다. 현재는 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정이 아닌 증식 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Masan Bay's PSP conditions index is 0.19 (low), with sea temperature at 23.7°C (down 0.8°C in 7 days), 6.5 mm of rain and mean wind of 3.1 m/s. It is outside the February–June PSP season, and the index describes bloom conditions, not toxin levels. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있으며 뒷받침하는 식약처 기록이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "geoje": {
+  "id": "geoje",
+  "advisory_ko": "거제 북안의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 23.6°C가 7일간 1.0°C 내려갔습니다. 지금은 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정값이 아닌 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "The PSP conditions index for Geoje (north) is 0.13 (low), with sea temperature at 23.6°C, down 1.0°C over 7 days. It is outside the February–June PSP season, and the index reflects conditions, not toxin measurements. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있고 식약처 기록의 뒷받침이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "tongyeong": {
+  "id": "tongyeong",
+  "advisory_ko": "통영의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 23.9°C(7일간 0.8°C 하강), 7일 강수량 0.0mm입니다. 현재는 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정이 아닌 증식 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Tongyeong's PSP conditions index is 0.13 (low), with sea temperature at 23.9°C (down 0.8°C in 7 days) and no rain over 7 days. It is outside the February–June PSP season, and the index describes bloom conditions, not toxin levels. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있으며 뒷받침하는 식약처 기록이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "goseong": {
+  "id": "goseong",
+  "advisory_ko": "고성 자란만의 PSP 발생 여건 지수는 0.17(낮음)이며, 평균 풍속 2.9m/s로 바다가 잔잔했지만 수온 23.8°C는 7일간 1.0°C 내려갔습니다. 지금은 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정이 아닌 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Jaran Bay's PSP conditions index is 0.17 (low); winds were calm at a mean of 2.9 m/s, but sea temperature of 23.8°C fell 1.0°C over 7 days. It is outside the February–June PSP season, and the index reflects conditions, not toxin measurements. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있고 식약처 기록의 뒷받침이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "sacheon": {
+  "id": "sacheon",
+  "advisory_ko": "사천만의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 23.7°C가 7일간 1.1°C 내려갔습니다. 현재는 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정값이 아닌 증식 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Sacheon Bay's PSP conditions index is 0.13 (low), with sea temperature at 23.7°C, down 1.1°C over 7 days. It is outside the February–June PSP season, and the index describes bloom conditions, not toxin levels. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있으며 뒷받침하는 식약처 기록이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "namhae": {
+  "id": "namhae",
+  "advisory_ko": "남해 강진만의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 23.9°C(7일간 0.9°C 하강), 7일 강수량 0.0mm입니다. 지금은 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정이 아닌 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Gangjin Bay (Namhae) has a PSP conditions index of 0.13 (low), with sea temperature at 23.9°C (down 0.9°C in 7 days) and no rain over 7 days. It is outside the February–June PSP season, and the index reflects conditions, not toxin measurements. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있고 식약처 기록의 뒷받침이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ },
+ "yeosu": {
+  "id": "yeosu",
+  "advisory_ko": "여수 가막만의 PSP 발생 여건 지수는 0.13(낮음)으로, 수온 22.9°C가 7일간 1.3°C 내려갔고 평균 풍속은 4.8m/s였습니다. 현재는 2~6월 PSP 시기가 아니며, 이 지수는 독소 측정이 아닌 증식 여건 지표입니다. 관련된 식약처 수산물 기록은 없습니다.",
+  "advisory_en": "Gamak Bay's PSP conditions index is 0.13 (low), with sea temperature at 22.9°C, down 1.3°C over 7 days, and mean wind of 4.8 m/s. It is outside the February–June PSP season, and the index describes bloom conditions, not toxin levels. There are no related MFDS seafood records.",
+  "confidence": "low",
+  "confidence_why_ko": "기상·수온 대리지표만 있으며 뒷받침하는 식약처 기록이 없습니다.",
+  "confidence_why_en": "Weather and sea-temperature proxy only, with no corroborating MFDS records.",
+  "day": "2026-10-09"
+ }
+}

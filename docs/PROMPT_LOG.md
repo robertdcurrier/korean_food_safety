@@ -79,6 +79,27 @@ Produced: `docs/guide/guide.html` and the rendered
 portal's own key-application instructions and the current Claude
 Code and Console steps.
 
+## 5. Phase 2, with the colleague in the room
+
+> I'm sitting with my colleague and he loves the app. He is
+> interested in environmental impacts, so for this demo, would it
+> be possible to pull in near real-time weather data and build a
+> layer or warning tab for possible shellfish toxicity... this is
+> just a demo but he will need to lead a team that integrates
+> environmental data into what is already supplied by MFDS.
+> Please think about this and report back
+
+Produced: a report, not code. Live probe of Open-Meteo for Jinhae
+Bay, a search for official NIFS toxin APIs (none public), the
+scientific framing (conditions, not toxicity), a design, and three
+decisions for the humans.
+
+> No keys. Use the eight bays. Use PSP spring window as this is
+> really just a POC demo
+
+Produced: PLAN.md phase 2, `env.py`, `advisory.py`, the second
+tab, tests, `docs/ENVIRONMENT.md`.
+
 ## Prompts used inside the app
 
 The system prompt Claude receives for each batch of records is in

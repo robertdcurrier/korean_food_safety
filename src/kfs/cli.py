@@ -4,6 +4,7 @@
     python -m kfs all            # whole pipeline
     python -m kfs fetch          # MFDS only
     python -m kfs enrich --max 40
+    python -m kfs env            # weather/sea conditions + advisories
     python -m kfs build          # re-render HTML from cached data
 """
 import argparse
@@ -13,7 +14,7 @@ import sys
 from pathlib import Path
 
 from kfs import enrich as enrich_mod
-from kfs import geocode, mfds, report
+from kfs import advisory, env, geocode, mfds, report
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
@@ -22,6 +23,8 @@ RECORDS = DATA / "records.json"
 ENRICHED = DATA / "enriched.json"
 GEOCACHE = DATA / "geocache.json"
 PROVINCES = DATA / "korea_provinces.geojson"
+ENV = DATA / "env.json"
+ENV_ADVISORY = DATA / "env_advisory.json"
 TEMPLATE = ROOT / "templates" / "report.html"
 OUTPUT = ROOT / "output" / "index.html"
 
@@ -76,16 +79,34 @@ def cmd_geocode(args):
     enrich_mod.save_json(RECORDS, records)
 
 
+def cmd_env(args):
+    """Fetch Open-Meteo for the eight bays, score, then ask Claude."""
+    try:
+        payload = env.assess_all()
+    except Exception as exc:  # keep the last good file on a bad network
+        print(f"env: fetch failed ({exc}); keeping previous data/env.json")
+        return
+    enrich_mod.save_json(ENV, payload)
+    print(f"env: {len(payload['bays'])} bays -> {ENV.relative_to(ROOT)}")
+    if not enrich_mod.has_credentials():
+        print("env: no Anthropic credential; skipping advisories")
+        return
+    advisory.advise(payload, _records(), ENV_ADVISORY)
+
+
 def cmd_build(args):
     records = _records()
     enriched = enrich_mod.load_json(ENRICHED, {})
+    env_data = enrich_mod.load_json(ENV, None)
+    advisories = enrich_mod.load_json(ENV_ADVISORY, {})
     meta = {
         "key_mode": "sample" if mfds.api_key() == mfds.SAMPLE_KEY
         else "personal",
         "model": enrich_mod.MODEL if enriched else None,
         "enriched_count": sum(1 for r in records if r["id"] in enriched),
     }
-    payload = report.build_payload(records, enriched, meta)
+    payload = report.build_payload(records, enriched, meta,
+                                   env_data, advisories)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     report.render(TEMPLATE, OUTPUT, payload, report.load_geojson(PROVINCES))
     print(f"build: {len(records)} records, "
@@ -97,6 +118,7 @@ def cmd_all(args):
     cmd_fetch(args)
     cmd_enrich(args)
     cmd_geocode(args)
+    cmd_env(args)
     cmd_build(args)
 
 
@@ -107,8 +129,8 @@ def main(argv=None):
         formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)
     for name, func in (("fetch", cmd_fetch), ("enrich", cmd_enrich),
-                       ("geocode", cmd_geocode), ("build", cmd_build),
-                       ("all", cmd_all)):
+                       ("geocode", cmd_geocode), ("env", cmd_env),
+                       ("build", cmd_build), ("all", cmd_all)):
         cmd = sub.add_parser(name)
         cmd.add_argument("--max", type=int, default=None,
                          help="cap rows per service (fetch) or records "

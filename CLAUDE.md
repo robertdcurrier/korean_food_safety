@@ -30,7 +30,8 @@ then docs/METHODOLOGY.md.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 python -m unittest discover -s tests -v
-python -m kfs all            # fetch, enrich, geocode, build
+python -m kfs all            # fetch, enrich, geocode, env, build
+python -m kfs env            # Open-Meteo + PSP index + advisories
 python -m kfs build          # re-render from cached data
 open output/index.html
 ```
@@ -60,3 +61,7 @@ open output/index.html
 - AI fields are advisory. The footer of the page says so; keep it.
 - `data/korea_provinces.geojson` is the embedded basemap. Keep it;
   the map must work with no tile server at all.
+- The environmental tab is a conditions index, never a toxin claim.
+  Keep that language in the template and in advisory.py's prompt.
+  Thresholds in env.py are placeholders for the expert's rubric;
+  change docs/ENVIRONMENT.md and tests/test_env.py with them.

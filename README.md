@@ -29,6 +29,7 @@ regenerate with headless Chrome (see the end of `docs/METHODOLOGY.md`).
 | fetch | MFDS 식품안전나라 open API (`urllib`, no SDK) | `data/raw/*.json`, `data/records.json` |
 | enrich | Claude, structured output, 20 records per call | `data/enriched.json` |
 | geocode | OpenStreetMap Nominatim, district level, cached | `data/geocache.json` |
+| env | Open-Meteo marine + weather for 8 bays, PSP conditions index, Claude advisory | `data/env.json`, `data/env_advisory.json` |
 | build | HTML template + embedded JSON | `output/index.html` |
 
 Claude does only the judgement work: English translation of product,
@@ -40,6 +41,16 @@ The page has a KO/EN toggle, a theme toggle, a free-text search,
 filters for source, hazard, severity and province, a Leaflet map of
 business locations coloured by severity, a clickable bar chart of
 hazard types, and a case list with full MFDS details.
+
+## The environmental tab (phase 2)
+
+A second tab shows, for eight south-coast shellfish bays, whether the
+last seven days of sea temperature, rainfall, wind and season favour
+a paralytic-shellfish-poisoning bloom. Keyless Open-Meteo data, a
+deterministic tested index, and one Claude step that writes a
+bilingual advisory per bay with an explicit confidence. It is a
+conditions index, not a toxin measurement, and it says so. Design
+and the production replacements are in `docs/ENVIRONMENT.md`.
 
 ## Quick start (no keys needed)
 
@@ -74,6 +85,7 @@ python -m kfs all              # or step by step:
 python -m kfs fetch
 python -m kfs enrich --max 40  # cap spend while experimenting
 python -m kfs geocode
+python -m kfs env              # environmental tab
 python -m kfs build
 ```
 
@@ -88,9 +100,12 @@ CLAUDE.md             standards and method Claude Code reads every session
 docs/METHODOLOGY.md   the working method, step by step, with the prompts that worked
 docs/PROMPT_LOG.md    the actual prompts that produced this repo
 docs/MFDS_API.md      the API as observed: URL shape, codes, field dictionary
+docs/ENVIRONMENT.md   the PSP tab: data, index, what production replaces
 src/kfs/mfds.py       API client and record normalisation
 src/kfs/enrich.py     the one place Claude runs; schema and system prompt
 src/kfs/geocode.py    address splitting and cached Nominatim lookups
+src/kfs/env.py        Open-Meteo fetch and the PSP conditions index
+src/kfs/advisory.py   Claude's bilingual advisory per bay
 src/kfs/report.py     merge and render
 src/kfs/cli.py        python -m kfs {fetch,enrich,geocode,build,all}
 templates/report.html the page: all UI strings in one KO/EN table

@@ -104,7 +104,27 @@ footer { max-width: 1200px; margin: 24px auto 0; color: var(--text-3); font-size
 footer a { color: var(--accent); }
 .leaflet-popup-content { font: 13px/1.45 inherit; color: #0b0b0b; }
 .leaflet-popup-content b { font-size: 14px; }
+.baylbl { background: rgba(255,255,255,.85); border: none; box-shadow: none; font-size: 11px; padding: 1px 5px; color: #0b0b0b; }
+.baylbl::before { display: none; }
 .sr { position: absolute; left: -9999px; }
+.tabs { max-width: 1200px; margin: 0 auto 16px; display: flex; gap: 6px; border-bottom: 1px solid var(--border); }
+.tabs button { border: 1px solid transparent; border-bottom: none; background: none; border-radius: 8px 8px 0 0; padding: 9px 14px; color: var(--text-2); font-weight: 600; }
+.tabs button[aria-selected="true"] { background: var(--surface); border-color: var(--border); color: var(--text); margin-bottom: -1px; }
+main[hidden] { display: none; }
+#envmap { height: 420px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); }
+.bays { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.bay { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.bay h3 { margin: 0 0 4px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.bay .nums { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; font-size: 12.5px; color: var(--text-2); margin: 6px 0; }
+.bay .nums b { color: var(--text); font-variant-numeric: tabular-nums; }
+.bay svg { width: 100%; height: 36px; display: block; margin: 4px 0 2px; }
+.bay .adv { margin-top: 8px; padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 8px 8px 0; font-size: 13.5px; }
+.bay .adv .k { color: var(--text-3); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.factors { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.factors span { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); }
+.warnbox { border-left: 4px solid var(--sev-low); background: var(--surface-2); padding: 10px 14px; border-radius: 0 8px 8px 0; }
+.warnbox p { margin: 0 0 6px; } .warnbox p:last-child { margin: 0; }
+:root { --lvl-low: #0ca30c; --lvl-moderate: #fab219; --lvl-elevated: #ec835a; }
 </style>
 </head>
 <body>
@@ -118,7 +138,11 @@ footer a { color: var(--accent); }
     <button id="theme" aria-label="theme">◐</button>
   </div>
 </header>
-<main>
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tab-recalls" aria-selected="true" aria-controls="panel-recalls"></button>
+  <button role="tab" id="tab-env" aria-selected="false" aria-controls="panel-env"></button>
+</nav>
+<main id="panel-recalls" role="tabpanel">
   <section class="tiles" id="tiles" aria-live="polite"></section>
   <section class="filters card">
     <input id="q" type="search" autocomplete="off">
@@ -146,6 +170,29 @@ footer a { color: var(--accent); }
     <div class="list" id="list"></div>
   </section>
 </main>
+<main id="panel-env" role="tabpanel" hidden>
+  <section class="card">
+    <h2 id="env-h"></h2>
+    <div class="warnbox" id="env-intro"></div>
+  </section>
+  <section class="grid">
+    <div class="card">
+      <h2 id="env-map-h"></h2>
+      <div id="envmap" role="img"></div>
+      <div class="legend" id="env-legend"></div>
+      <p class="note" id="env-map-note"></p>
+    </div>
+    <div class="card">
+      <h2 id="env-how-h"></h2>
+      <div id="env-how" class="small"></div>
+    </div>
+  </section>
+  <section class="card">
+    <h2 id="env-bays-h"></h2>
+    <div class="bays" id="bays"></div>
+    <p class="note" id="env-foot"></p>
+  </section>
+</main>
 <footer id="foot"></footer>
 
 <script>const DATA = /*__DATA__*/null;
@@ -167,6 +214,21 @@ const GEO = /*__GEO__*/null;</script>
       mapNote: '좌표는 주소의 시·군·구 중심점이며, 겹침을 피하려고 약간 흩뜨렸습니다. 지도에 없는 사례는 주소가 비어 있거나 좌표를 찾지 못한 경우입니다.',
       barsNote: '막대를 클릭하면 해당 유형으로 필터링됩니다.',
       foot: (g, m) => `출처: 식품의약품안전처 식품안전나라 공공데이터 (I0490 회수·판매중지, I2620 검사부적합). 생성 ${g}. ` + (m.model ? `번역·분류·요약: ${m.model} (${m.enriched_count}건). ` : 'AI 보강 없이 생성됨. ') + (m.key_mode === 'sample' ? '샘플 인증키 사용: 서비스당 5건만 포함. 개인 인증키를 설정하면 전체 데이터가 들어갑니다. ' : '') + 'AI 생성 내용은 참고용이며 공식 판정이 아닙니다. 원문은 foodsafetykorea.go.kr 에서 확인하세요.',
+      tabRecalls: '회수·검사부적합', tabEnv: '환경 조건 · 패류독소 (POC)',
+      env: {
+        h: '마비성 패류독소(PSP) 발생 여건 — 개념 검증(POC)',
+        intro: ['이 탭은 <b>독소 측정이 아닙니다.</b> 남해안 8개 패류 생산 해역의 최근 7일 수온·강우·바람·계절을 바탕으로, 마비성 패류독소를 만드는 <i>Alexandrium</i> 적조가 발생하기 <b>유리한 조건인지</b>를 단순 규칙으로 계산한 지수입니다.', '국내 PSP 발생 시기는 대체로 2~6월입니다. 시기 밖에서는 지수가 낮게 나오는 것이 정상입니다. 공식 정보는 국립수산과학원 패류독소 속보를 확인하세요.', '데이터: Open-Meteo (무료, 인증키 없음). 실제 시스템에서는 바다누리(KHOA) 관측 부이, 기상청 강수, 수과원 패류독소·적조 속보로 대체합니다.'],
+        mapH: '해역별 여건 지수', howH: '지수 계산 방법', baysH: '해역별 상세',
+        lvl: { low: '낮음', moderate: '관심', elevated: '주의' },
+        f: { sst: '수온', trend: '7일 수온 추세', rain: '7일 강우', calm: '바람(정체)', season: '계절' },
+        n: { sst: '현재 수온', delta: '7일 변화', rain: '7일 강우량', wind: '7일 평균 풍속', wave: '파고', air: '최고기온' },
+        howBody: '가중 합 (0~1): 수온 35% (Alexandrium 적정 8~18°C, 최적 12~16°C), 7일 수온 상승 20%, 7일 강우 20% (육상 영양염 유입), 평균 풍속 10% (약할수록 성층 형성), 계절 15% (2~6월). 0.65 이상 주의, 0.40 이상 관심, 그 미만 낮음. 코드로 구현되고 테스트되는 규칙이며, 모델이 아닙니다. 임계값은 전문가가 수정합니다.',
+        mapNote: '좌표는 대략적인 해역 중심입니다. 점을 클릭하면 수치와 AI 설명을 볼 수 있습니다.',
+        adv: 'AI 설명', conf: '근거 신뢰도', confL: { low: '낮음', medium: '보통', high: '높음' },
+        noAdv: 'AI 설명 없음 (Anthropic 키 없이 생성됨).', noData: '환경 데이터가 없습니다. python -m kfs env 를 실행하세요.',
+        season: s => s ? 'PSP 시즌(2~6월) 중' : 'PSP 시즌(2~6월) 아님',
+        foot: (e) => `관측·예보: ${e.source}. 조회 ${e.fetched_at.replace('T',' ').slice(0,16)}. 이 지수는 참고용 개념 검증이며 공식 판정이 아닙니다.`
+      },
       generatedBy: '생성'
     },
     en: {
@@ -182,6 +244,21 @@ const GEO = /*__GEO__*/null;</script>
       mapNote: 'Points sit at the centre of the address district and are slightly spread to avoid overlap. Cases without a point have no address or no geocode match.',
       barsNote: 'Click a bar to filter by that hazard type.',
       foot: (g, m) => `Source: Ministry of Food and Drug Safety open data via foodsafetykorea.go.kr (I0490 recalls, I2620 failed inspections). Generated ${g}. ` + (m.model ? `Translation, classification and summaries by ${m.model} (${m.enriched_count} records). ` : 'Generated without AI enrichment. ') + (m.key_mode === 'sample' ? 'Built with the public sample key: only 5 rows per service. Set a personal MFDS key for the full dataset. ' : '') + 'AI content is advisory and not an official determination. Verify against the original record.',
+      tabRecalls: 'Recalls & inspections', tabEnv: 'Environmental conditions · PSP (POC)',
+      env: {
+        h: 'Paralytic shellfish poisoning (PSP): bloom-favourable conditions — proof of concept',
+        intro: ['This tab is <b>not a toxin measurement.</b> For eight shellfish-producing bays on the south coast it computes, with simple rules, whether the last seven days of sea temperature, rainfall, wind and season <b>favour a bloom</b> of <i>Alexandrium</i>, the organism behind paralytic shellfish poisoning.', 'The Korean PSP season runs roughly February to June. Outside it, a low index is the expected answer. For official status see the NIFS shellfish toxin bulletins.', 'Data: Open-Meteo (free, no key). A real system replaces it with KHOA coastal buoys, KMA rainfall and the NIFS toxin and red-tide bulletins.'],
+        mapH: 'Conditions index by bay', howH: 'How the index is computed', baysH: 'Bay details',
+        lvl: { low: 'Low', moderate: 'Moderate', elevated: 'Elevated' },
+        f: { sst: 'Sea temp', trend: '7-day trend', rain: '7-day rain', calm: 'Calm', season: 'Season' },
+        n: { sst: 'Sea temp now', delta: '7-day change', rain: '7-day rainfall', wind: '7-day mean wind', wave: 'Wave height', air: 'Air max' },
+        howBody: 'Weighted sum, 0 to 1: sea temperature 35% (Alexandrium window 8–18 °C, best 12–16), seven-day warming 20%, seven-day rainfall 20% (nutrient runoff), mean wind 10% (calm water stratifies), season 15% (February–June). 0.65 and above elevated, 0.40 and above moderate, below that low. These are rules in code with tests, not a model. The expert sets the thresholds.',
+        mapNote: 'Points are approximate bay centres. Click one for the numbers and the AI note.',
+        adv: 'AI note', conf: 'Evidence confidence', confL: { low: 'Low', medium: 'Medium', high: 'High' },
+        noAdv: 'No AI note (built without an Anthropic key).', noData: 'No environmental data. Run python -m kfs env.',
+        season: s => s ? 'In PSP season (Feb–Jun)' : 'Outside PSP season (Feb–Jun)',
+        foot: (e) => `Observations and forecasts: ${e.source}. Fetched ${e.fetched_at.replace('T',' ').slice(0,16)}. This index is an advisory proof of concept, not an official determination.`
+      },
       generatedBy: 'Generated'
     }
   };
@@ -229,6 +306,7 @@ const GEO = /*__GEO__*/null;</script>
   function renderStatic() {
     document.documentElement.lang = lang;
     $('title').textContent = t().title; $('subtitle').textContent = t().subtitle;
+    $('tab-recalls').textContent = t().tabRecalls; $('tab-env').textContent = t().tabEnv;
     $('lang').textContent = t().lang; $('h-map').textContent = t().map; $('h-haz').textContent = t().hazards; $('h-list').textContent = t().list;
     $('q').placeholder = t().search; $('reset').textContent = t().reset;
     $('map-note').textContent = t().mapNote; $('bars-note').textContent = t().barsNote;
@@ -358,9 +436,84 @@ const GEO = /*__GEO__*/null;</script>
     const more = $('more'); if (more) more.onclick = () => { state.shown += 60; renderList(filtered()); };
   }
 
+  // ---------- Environmental tab ----------
+  const ENV = DATA && DATA.env;
+  let envMap, envLayer, envOutline, activeTab = 'recalls';
+  const lvlColor = l => css('--lvl-' + (l || 'low'));
+  const fmt = (v, unit) => v == null ? '–' : `${v}${unit}`;
+  function spark(series, color) {
+    const vals = series.map(d => d[1]).filter(v => v != null);
+    if (vals.length < 2) return '';
+    const min = Math.min(...vals), max = Math.max(...vals), span = (max - min) || 1;
+    const pts = series.map((d, i) => `${(i / (series.length - 1) * 100).toFixed(1)},${(30 - (d[1] - min) / span * 26).toFixed(1)}`).join(' ');
+    return `<svg viewBox="0 0 100 36" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2" points="${pts}"/></svg>`;
+  }
+  function bayCard(b) {
+    const e = t().env, a = b.advisory;
+    const advText = a ? (lang === 'en' ? a.advisory_en : a.advisory_ko) : '';
+    const why = a ? (lang === 'en' ? a.confidence_why_en : a.confidence_why_ko) : '';
+    const fac = Object.entries(b.factors || {}).map(([k, v]) => `<span title="${esc(e.f[k])}">${esc(e.f[k])} ${Math.round(v * 100)}%</span>`).join('');
+    return `<article class="bay">
+      <h3><span>${esc(lang === 'en' ? b.name_en : b.name_ko)}</span><span class="badge"><i class="dot" style="background:${lvlColor(b.level)}"></i>${esc(e.lvl[b.level])} ${b.score.toFixed(2)}</span></h3>
+      <div class="small">${esc(b.sido)} · ${esc(e.season(ENV.in_season))}</div>
+      ${spark(b.sst_daily || [], css('--accent'))}
+      <div class="nums">
+        <span>${esc(e.n.sst)} <b>${fmt(b.sst_now, ' °C')}</b></span><span>${esc(e.n.delta)} <b>${b.sst_delta_7d > 0 ? '+' : ''}${fmt(b.sst_delta_7d, ' °C')}</b></span>
+        <span>${esc(e.n.rain)} <b>${fmt(b.rain_7d, ' mm')}</b></span><span>${esc(e.n.wind)} <b>${fmt(b.wind_7d_mean, ' m/s')}</b></span>
+        <span>${esc(e.n.wave)} <b>${fmt(b.wave_now, ' m')}</b></span><span>${esc(e.n.air)} <b>${fmt(b.air_tmax, ' °C')}</b></span>
+      </div>
+      <div class="factors">${fac}</div>
+      ${a ? `<div class="adv"><div class="k">${esc(e.adv)}</div>${esc(advText)}<div class="k" style="margin-top:6px">${esc(e.conf)}: ${esc(e.confL[a.confidence] || a.confidence)}</div><span class="small">${esc(why)}</span></div>` : `<p class="note">${esc(e.noAdv)}</p>`}
+    </article>`;
+  }
+  function envPopup(b) {
+    const e = t().env, a = b.advisory;
+    return `<b>${esc(lang === 'en' ? b.name_en : b.name_ko)}</b> · <span style="color:${lvlColor(b.level)}">●</span> ${esc(e.lvl[b.level])} ${b.score.toFixed(2)}<br>` +
+      `${esc(e.n.sst)} ${fmt(b.sst_now, ' °C')} · ${esc(e.n.rain)} ${fmt(b.rain_7d, ' mm')} · ${esc(e.n.wind)} ${fmt(b.wind_7d_mean, ' m/s')}<br>` +
+      (a ? `<small>${esc(lang === 'en' ? a.advisory_en : a.advisory_ko)}</small>` : '');
+  }
+  function ensureEnvMap() {
+    if (envMap || typeof L === 'undefined') return;
+    envMap = L.map('envmap', { scrollWheelZoom: false }).setView([34.95, 128.2], 9);
+    if (GEO) envOutline = L.geoJSON(GEO, { style: outlineStyle(), attribution: GEO_ATTR }).addTo(envMap);
+    const tl = L.tileLayer(TILE_URL, { maxZoom: 18, attribution: TILE_ATTR });
+    tl.on('tileerror', () => { envMap.removeLayer(tl); dropTiles(); if (envOutline) envOutline.setStyle(outlineStyle()); });
+    tl.addTo(envMap);
+    envLayer = L.layerGroup().addTo(envMap);
+  }
+  function renderEnv() {
+    const e = t().env;
+    $('env-h').textContent = e.h; $('env-map-h').textContent = e.mapH; $('env-how-h').textContent = e.howH; $('env-bays-h').textContent = e.baysH;
+    $('env-intro').innerHTML = e.intro.map(p => `<p>${p}</p>`).join('');
+    $('env-how').textContent = e.howBody; $('env-map-note').textContent = e.mapNote;
+    $('env-legend').innerHTML = ['low', 'moderate', 'elevated'].map(l => `<span><i class="dot" style="background:${lvlColor(l)}"></i>${esc(e.lvl[l])}</span>`).join('');
+    if (!ENV) { $('bays').innerHTML = `<div class="empty">${esc(e.noData)}</div>`; $('env-foot').textContent = ''; return; }
+    $('bays').innerHTML = ENV.bays.map(bayCard).join('');
+    $('env-foot').textContent = e.foot(ENV);
+    ensureEnvMap(); if (!envMap) return;
+    if (envOutline) envOutline.setStyle(outlineStyle());
+    envLayer.clearLayers();
+    ENV.bays.forEach(b => {
+      L.circleMarker([b.lat, b.lon], { radius: 11, color: isDark() ? '#1a1a19' : '#ffffff', weight: 2, fillColor: lvlColor(b.level), fillOpacity: .95 })
+        .bindTooltip(lang === 'en' ? b.name_en : b.name_ko, { permanent: true, direction: 'right', offset: [10, 0], className: 'baylbl' })
+        .bindPopup(envPopup(b)).addTo(envLayer);
+    });
+    if (activeTab === 'env') setTimeout(() => envMap.invalidateSize(), 50);
+  }
+  function showTab(name) {
+    activeTab = name;
+    $('panel-recalls').hidden = name !== 'recalls'; $('panel-env').hidden = name !== 'env';
+    $('tab-recalls').setAttribute('aria-selected', name === 'recalls'); $('tab-env').setAttribute('aria-selected', name === 'env');
+    store.set('kfs.tab', name);
+    if (name === 'env' && envMap) setTimeout(() => envMap.invalidateSize(), 50);
+    if (name === 'recalls' && map) setTimeout(() => map.invalidateSize(), 50);
+  }
+  $('tab-recalls').onclick = () => showTab('recalls');
+  $('tab-env').onclick = () => showTab('env');
+
   function update() {
     const rows = filtered();
-    renderTiles(rows); renderBars(rows); renderMap(rows); renderList(rows);
+    renderTiles(rows); renderBars(rows); renderMap(rows); renderList(rows); renderEnv();
   }
 
   $('q').addEventListener('input', e => { state.q = e.target.value; state.shown = 60; update(); });
@@ -377,6 +530,7 @@ const GEO = /*__GEO__*/null;</script>
   };
 
   renderStatic(); update();
+  showTab(qs.get('tab') === 'env' ? 'env' : (store.get('kfs.tab') === 'env' ? 'env' : 'recalls'));
 })();
 </script>
 </body>

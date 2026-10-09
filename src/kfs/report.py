@@ -33,7 +33,18 @@ def merge(record, enriched):
     return out
 
 
-def build_payload(records, enriched, meta):
+def attach_advisories(env_data, advisories):
+    """Copy each bay's cached advisory onto the bay dict, if any."""
+    if not env_data:
+        return None
+    out = dict(env_data)
+    out["bays"] = [dict(b, advisory=advisories.get(b["id"]))
+                   for b in env_data.get("bays", [])]
+    return out
+
+
+def build_payload(records, enriched, meta, env_data=None,
+                  advisories=None):
     rows = [merge(r, enriched.get(r["id"])) for r in records]
     rows.sort(key=lambda r: r.get("date", ""), reverse=True)
     return {
@@ -42,6 +53,7 @@ def build_payload(records, enriched, meta):
         "services": SERVICES,
         "meta": meta,
         "records": rows,
+        "env": attach_advisories(env_data, advisories or {}),
     }
 
 
