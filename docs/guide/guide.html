@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>K-Food Safety Watch: A Step-by-Step Guide</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 20mm 17mm; }
+:root { --ink:#111; --ink2:#444; --ink3:#777; --rule:#ddd; --accent:#2a78d6; --soft:#eef4fc; --warn:#fff6e0; --warn-b:#e0a800; --good:#eaf7ea; --good-b:#2f8f2f; --code:#f4f4f2; }
+* { box-sizing:border-box; }
+body { font: 11pt/1.5 -apple-system, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; color:var(--ink); margin:0; }
+h1 { font-size:26pt; line-height:1.15; margin:0 0 6pt; letter-spacing:-.01em; }
+h2 { font-size:17pt; margin:0 0 10pt; padding-bottom:5pt; border-bottom:2px solid var(--accent); page-break-after:avoid; }
+h3 { font-size:12.5pt; margin:16pt 0 5pt; page-break-after:avoid; }
+h4 { font-size:11pt; margin:12pt 0 3pt; page-break-after:avoid; }
+p { margin:0 0 8pt; }
+ul, ol { margin:0 0 8pt; padding-left:20pt; }
+li { margin-bottom:3pt; }
+section { page-break-before:always; }
+section.cont { page-break-before:auto; }
+.cover { page-break-after:always; }
+.cover .kicker { color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:10pt; }
+.cover .ko { font-size:15pt; color:var(--ink2); margin-top:4pt; }
+.cover .meta { color:var(--ink2); font-size:10.5pt; line-height:1.7; }
+.cover img { width:100%; border:1px solid var(--rule); border-radius:6px; margin:18pt 0; }
+.box { border-left:4px solid var(--accent); background:var(--soft); padding:9pt 12pt; margin:10pt 0; border-radius:0 6px 6px 0; page-break-inside:avoid; }
+.box.lesson { border-color:var(--good-b); background:var(--good); }
+.box.warn { border-color:var(--warn-b); background:var(--warn); }
+.box .t { font-weight:700; font-size:9.5pt; letter-spacing:.06em; text-transform:uppercase; color:var(--ink2); margin-bottom:3pt; }
+.box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom:0; }
+code, kbd { font: 9.5pt/1.4 "SF Mono", Menlo, Consolas, "D2Coding", monospace; background:var(--code); padding:1px 4px; border-radius:3px; }
+pre { font: 9.5pt/1.45 "SF Mono", Menlo, Consolas, "D2Coding", monospace; background:var(--code); border:1px solid var(--rule); border-radius:6px; padding:9pt 11pt; margin:6pt 0 10pt; white-space:pre-wrap; page-break-inside:avoid; }
+pre code { background:none; padding:0; }
+table { border-collapse:collapse; width:100%; margin:6pt 0 12pt; font-size:10pt; page-break-inside:avoid; }
+th, td { border:1px solid var(--rule); padding:5pt 7pt; vertical-align:top; text-align:left; }
+th { background:var(--code); font-weight:600; }
+td code { font-size:9pt; }
+.steps { counter-reset:step; list-style:none; padding:0; }
+.steps > li { counter-increment:step; position:relative; padding-left:30pt; margin-bottom:10pt; page-break-inside:avoid; }
+.steps > li::before { content:counter(step); position:absolute; left:0; top:1pt; width:21pt; height:21pt; border-radius:50%; background:var(--accent); color:#fff; font-weight:700; font-size:10.5pt; text-align:center; line-height:21pt; }
+.steps > li > b:first-child { display:block; margin-bottom:2pt; }
+.check { color:var(--good-b); font-weight:600; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:12pt; margin:8pt 0 12pt; page-break-inside:avoid; }
+.card { border:1px solid var(--rule); border-radius:8px; padding:10pt 12pt; }
+.card h4 { margin-top:0; color:var(--accent); }
+.flow { display:grid; grid-template-columns:repeat(4,1fr); gap:6pt; margin:8pt 0 12pt; page-break-inside:avoid; }
+.flow div { border:1px solid var(--rule); border-radius:8px; padding:8pt; font-size:9.5pt; background:#fafaf8; }
+.flow b { display:block; color:var(--accent); font-size:10.5pt; margin-bottom:2pt; }
+img.shot { width:100%; border:1px solid var(--rule); border-radius:6px; margin:4pt 0 10pt; page-break-inside:avoid; }
+.small { font-size:9.5pt; color:var(--ink2); }
+.quote { border-left:3px solid var(--rule); margin:6pt 0 10pt; padding:4pt 10pt; color:var(--ink2); font-style:italic; page-break-inside:avoid; }
+.toc ol { columns:2; column-gap:24pt; }
+.toc li { break-inside:avoid; }
+dl.gloss { display:grid; grid-template-columns:max-content 1fr; gap:4pt 12pt; }
+dl.gloss dt { font-weight:600; } dl.gloss dd { margin:0; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div>
+    <div class="kicker">A teaching repository</div>
+    <h1>K-Food Safety Watch<br>A Step-by-Step Guide</h1>
+    <div class="ko">K-식품안전 워치: 비개발자를 위한 단계별 안내서</div>
+    <p style="margin-top:14pt;max-width:120mm;color:var(--ink2)">How a food-safety scientist and Claude built a working app in one morning, what each piece does, how to run it yourself, and how to keep going without becoming a programmer.</p>
+    <img src="../screenshots/report_ko.png" alt="The finished page">
+  </div>
+  <div class="meta">
+    Written in Hongdae, Seoul, 9 October 2026<br>
+    Bob Currier (OCEANCODA) with Claude Code<br>
+    Repository: <b>github.com/robertdcurrier/korean_food_safety</b> (this guide is <code>docs/K-Food-Safety-Watch-Guide.pdf</code> there)
+  </div>
+</div>
+
+<section class="toc cont">
+<h2>Contents</h2>
+<ol>
+  <li>Who this is for, and the one lesson that matters most</li>
+  <li>What we built</li>
+  <li>The two Claudes: the builder and the worker</li>
+  <li>How the app works, in plain language</li>
+  <li>How it was built: the method</li>
+  <li>Setting up your computer</li>
+  <li>Getting your two keys</li>
+  <li>Working with Claude Code on this project</li>
+  <li>Exercises, in order of difficulty</li>
+  <li>When something goes wrong</li>
+  <li>Glossary</li>
+</ol>
+<div class="box">
+  <div class="t">Sixty-second version</div>
+  <p>A Python program fetches Korean food recalls and failed inspections from the government's open API. It sends them, twenty at a time, to Claude, which translates them into English, classifies the hazard, judges the severity, and writes a one-sentence summary in both languages. The program then writes one HTML file you open in a browser: a searchable, filterable, bilingual map and list. Claude Code wrote every line of that program from plain-English conversation. You can run it with no keys in five minutes, and each key you add makes the result better.</p>
+</div>
+</section>
+
+<section>
+<h2>1. Who this is for, and the one lesson that matters most</h2>
+<p>You are a scientist. You know what a recall grade means, which test items matter, and when a result is alarming versus merely out of spec. You do not need to become a software developer to build tools that use that knowledge. This guide shows you exactly how one such tool was built, and how to run and extend it.</p>
+
+<div class="box lesson">
+  <div class="t">The key lesson: own the question, not the keyboard</div>
+  <p>Everything technical in this repository, the terminal, Git, Python, API keys, debugging a map that would not load, is routine work for someone who grew up with it. For a Gen MZ partner with even modest coding exposure, setting this up is an hour, not a weekend.</p>
+  <p>What that partner cannot supply is you: knowing that aloe latex contains laxative anthraquinones, that a grade-1 recall is a different animal from a grade-3, that "금속성이물 39.84 mg/kg against a 10 mg/kg limit" is serious, and which of the MFDS's hundreds of data services actually matter. That is the scarce input. The code is not.</p>
+  <p>So the strong recommendation is: find a partner who is comfortable in a terminal, hand them Sections 6 and 7 of this guide, and spend your own time on Sections 3, 5, 8 and 9. Decide what to build, judge whether the AI's output is right, and write the evaluation. Let them type.</p>
+  <p>Everything below is still written so you can do it alone if you want to. Treat the setup chapter as a test: if it takes you more than one evening, that is the signal to pair up, not to quit.</p>
+</div>
+
+<h3>What you will be able to do after reading this</h3>
+<ul>
+  <li>Explain what the app does and what each of the two Claudes contributes.</li>
+  <li>Run the app on your own computer and open the result.</li>
+  <li>Obtain and install the two keys that unlock the full data and the AI features.</li>
+  <li>Open Claude Code in the project and ask for changes in a way that gets good results.</li>
+  <li>Judge whether the AI's classifications are right, which only you can do.</li>
+</ul>
+</section>
+
+<section>
+<h2>2. What we built</h2>
+<p>A single web page, saved as a file on your computer, that opens in any browser without a server. It shows Korean food-safety enforcement records from two sources published by the Ministry of Food and Drug Safety (식품의약품안전처, MFDS) through its open-data portal 식품안전나라:</p>
+<table>
+  <tr><th>Service</th><th>Korean name</th><th>What it contains</th><th>Records on 9 Oct 2026</th></tr>
+  <tr><td><code>I0490</code></td><td>회수·판매중지 정보</td><td>Products recalled or pulled from sale, with the reason and recall grade</td><td>383</td></tr>
+  <tr><td><code>I2620</code></td><td>검사부적합(국내)</td><td>Domestic lab inspections that failed a standard: the test item, the measured result, the limit</td><td>544</td></tr>
+</table>
+<p>For every record, Claude adds an English translation, one of ten hazard categories, a severity of high, medium or low with a stated reason, and a one-sentence plain-language summary in Korean and in English.</p>
+<p>The page has a Korean/English toggle, a light/dark toggle, free-text search, filters for source, hazard type, severity and province, a map with one marker per business coloured by severity, a bar chart of hazard types you can click to filter, and a full case list with every original MFDS field.</p>
+<img class="shot" style="width:78%;display:block;margin:8pt auto 6pt" src="../screenshots/report_en_dark.png" alt="English, dark mode">
+<p class="small">The same page in English, dark mode. Nothing is translated by the browser; every label exists in both languages inside the file.</p>
+
+<h3>What it deliberately is not</h3>
+<ul>
+  <li>Not a copy of the MFDS site. The MFDS lists each service separately, in Korean only, with no map, no hazard taxonomy, and no severity view.</li>
+  <li>Not an official source. AI output is advisory and the page footer says so. The original record is always one click away.</li>
+  <li>Not street-level. Markers sit at the centre of the business's district (시·군·구), slightly scattered so they do not overlap.</li>
+</ul>
+</section>
+
+<section>
+<h2>3. The two Claudes: the builder and the worker</h2>
+<p>This project uses Claude in two completely different ways, and keeping them apart in your head is the single most useful piece of understanding in this guide.</p>
+
+<div class="two">
+  <div class="card">
+    <h4>Claude Code: the builder</h4>
+    <p>An application that runs on <b>your computer</b>, in the terminal. You talk to it in plain language. It reads and writes files, runs commands, searches the web, and asks you questions when it needs a decision.</p>
+    <p>It wrote every file in this repository: the plan, the Python code, the web page, the tests, the documentation, and this guide. It also created the GitHub repository and pushed to it.</p>
+    <p><b>Who talks to it:</b> you.<br><b>What it produces:</b> files and commands.<br><b>How you pay:</b> a Claude Pro or Max subscription, or an API key billed by usage.<br><b>When it runs:</b> only while you are working with it.</p>
+  </div>
+  <div class="card">
+    <h4>The Claude API: the worker inside the app</h4>
+    <p>A service on <b>Anthropic's servers</b> that the finished app calls over the internet. It never sees your terminal, never writes a file, and has no memory between calls.</p>
+    <p>One file in this project, <code>src/kfs/enrich.py</code>, sends it batches of twenty records with a set of instructions, and receives back a strictly structured answer for each record: translation, hazard, severity, reasons, summaries.</p>
+    <p><b>Who talks to it:</b> the Python program.<br><b>What it produces:</b> data, as JSON.<br><b>How you pay:</b> an API key, billed per token.<br><b>When it runs:</b> each time you run <code>python -m kfs enrich</code> on new records.</p>
+  </div>
+</div>
+
+<h3>What the worker is actually asked to do</h3>
+<p>The instructions it receives (the "system prompt") are plain English and live in <code>src/kfs/enrich.py</code>. The essence:</p>
+<div class="quote">
+You are a bilingual (Korean/English) food-safety analyst helping make public MFDS enforcement records readable. For each input record produce one output item with the same id. Translate product, company and reason into natural English. Choose one hazard category from: microbiological, chemical residue, heavy metal, foreign matter, allergen labelling, unapproved ingredient, additive violation, quality/spec, labelling (other), other. Judge severity as a consumer-health question: high for pathogens, toxins, undeclared allergens, sharp or hard foreign matter, banned substances, large heavy-metal exceedances, recall grade 1등급; medium for residue or additive limits exceeded, recall grade 2등급; low for quality or labelling faults, grade 3등급. Write one sentence a shopper would understand, in Korean and in English. Do not invent facts. If the reason is ambiguous, say so and pick the more cautious severity.
+</div>
+<p>And here is one real answer it gave, for the first record in the committed data:</p>
+<pre><code>product_en:      Aloe extract powder
+company_en:      Sungwon FI Co., Ltd.
+reason_en:       Contains aloe parts not permitted as food raw
+                 materials (skin, juice, latex)
+hazard:          unapproved_ingredient
+severity:        high
+severity_why_en: Grade 1 recall; aloe latex contains laxative
+                 anthraquinones and is not allowed in food.
+summary_ko:      주식회사 성원에프아이의 '알로에 추출물 분말'에 식품원료로
+                 허용되지 않는 알로에 껍질·쥬스·라텍스 부위가 포함되어 회수됩니다.
+summary_en:      Sungwon FI's aloe extract powder is being recalled
+                 because it contains aloe skin, juice and latex,
+                 which are not permitted as food ingredients.</code></pre>
+
+<div class="box lesson">
+  <div class="t">Your job in this picture</div>
+  <p>The hazard categories and the severity rubric in that prompt were written by Claude Code in about a minute, from general knowledge. They are reasonable. They are not <i>yours</i>. Reading them critically, tightening them, and checking twenty of the model's answers against your own judgement is exactly the work only a subject-matter expert can do, and it is Exercise 5 in Section 9.</p>
+</div>
+
+<h3>Cost, in real numbers</h3>
+<table>
+  <tr><th>Run</th><th>Tokens in / out</th><th>Approximate cost (Claude Opus 5.5, Oct 2026 list price)</th></tr>
+  <tr><td>Ten sample records (what is committed)</td><td>2,831 / 4,217</td><td>about US$0.10</td></tr>
+  <tr><td>Full dataset, about 930 records</td><td>roughly 90× that</td><td>about US$9</td></tr>
+  <tr><td>Re-running with nothing new</td><td>0 / 0</td><td>nothing: results are cached by record id</td></tr>
+</table>
+</section>
+
+<section>
+<h2>4. How the app works, in plain language</h2>
+<p>The program is a pipeline of four steps. Each one reads a file and writes a file. You can run them together or one at a time, and each skips work it has already done.</p>
+<div class="flow">
+  <div><b>1 · fetch</b>Asks the MFDS API for every row of both services and saves them. Converts the Korean field codes into one clean record format.</div>
+  <div><b>2 · enrich</b>Sends new records to Claude, twenty per call, and saves the structured answers in a cache keyed by record id.</div>
+  <div><b>3 · geocode</b>Splits each address into province and district, looks the district up once on OpenStreetMap's free geocoder, and caches the coordinates.</div>
+  <div><b>4 · build</b>Pours the records, the AI fields, the coordinates and Korea's province outlines into one HTML template and saves <code>output/index.html</code>.</div>
+</div>
+
+<h3>The design rule behind it</h3>
+<div class="box">
+  <div class="t">AI for judgement, code for rules</div>
+  <p>Only step 2 uses AI. Parsing a date like <code>(소비기한) 2031.8.13</code>, splitting <code>경기도 고양시 일산동구 문봉길 6-37</code> into province and district, and drawing the page are all mechanical. They are written as ordinary code with tests, which makes them free, instant, and verifiable. Claude is spent only where a rule cannot do the job: understanding what a Korean recall reason means and how worried a consumer should be.</p>
+  <p>Ask this of every step in any AI project: <i>could a regular expression do this?</i> If yes, do not spend tokens on it.</p>
+</div>
+
+<h3>Why it works with no keys</h3>
+<p>The MFDS portal accepts the literal word <code>sample</code> as a key and returns five fixed rows per service. If no Anthropic key is present, the enrich step prints a message and is skipped. So <code>python -m kfs all</code> produces a real, working page within minutes of cloning, just a small one with no AI fields. That was a deliberate choice: the first run should never fail. Then each key you add visibly improves the result, which is a far better way to learn what each key is for.</p>
+
+<h3>Where things live</h3>
+<table>
+  <tr><th>Path</th><th>What it is</th></tr>
+  <tr><td><code>PLAN.md</code></td><td>The plan, written before the code. Goal, scope, decisions, open questions.</td></tr>
+  <tr><td><code>CLAUDE.md</code></td><td>Standards and working method that Claude Code reads at the start of every session.</td></tr>
+  <tr><td><code>docs/METHODOLOGY.md</code></td><td>The working method in ten steps, with the prompts that worked.</td></tr>
+  <tr><td><code>docs/PROMPT_LOG.md</code></td><td>The actual prompts that produced the repository.</td></tr>
+  <tr><td><code>docs/MFDS_API.md</code></td><td>The API as observed: URL shape, result codes, Korean field dictionary.</td></tr>
+  <tr><td><code>src/kfs/</code></td><td>The program: <code>mfds.py</code>, <code>enrich.py</code>, <code>geocode.py</code>, <code>report.py</code>, <code>cli.py</code>.</td></tr>
+  <tr><td><code>templates/report.html</code></td><td>The page. Every label in both languages in one table near the top.</td></tr>
+  <tr><td><code>data/</code></td><td>Raw downloads, clean records, the AI cache, the geocode cache, province outlines.</td></tr>
+  <tr><td><code>output/index.html</code></td><td>The result. Double-click it.</td></tr>
+  <tr><td><code>.env</code></td><td>Your keys. Git ignores this file; it never leaves your computer.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>5. How it was built: the method</h2>
+<p>The entire repository came from two human messages and about ninety minutes of Claude Code working, plus a short exchange when the map misbehaved. Here is what the human did, because that is the part to copy.</p>
+
+<ol class="steps">
+  <li><b>Started with a briefing, not a task.</b> The first message said where we were, who the colleague is, what he knows, what he wants to learn, and what the deliverable looks like. It ended with "read this, and then report back". No code was requested. Claude Code came back with its understanding, a proposed layout, and three open questions. Correcting a misunderstanding at that point costs one sentence.</li>
+  <li><b>Decided only what a human must decide, and said so.</b> The second message chose the data source and the bilingual requirement, and explicitly delegated the rest: "I'm not sure of the format of the MFDS, so I'll rely on your judgement." Clear delegation produces better work than vague delegation.</li>
+  <li><b>Let the model probe reality before designing.</b> Claude Code searched for the API documentation, then fetched real rows with <code>curl</code>. That is how we learned in minutes that the sample key returns a fixed five rows, that field names are Korean abbreviations, and that inspection records often carry only a district-level address. Each fact changed the design.</li>
+  <li><b>Wrote the plan into the repository.</b> <code>PLAN.md</code> exists before the code and travels with it.</li>
+  <li><b>Put the standards where the model reads them every time.</b> <code>CLAUDE.md</code> holds the code rules and the working method. A standard that lives only in your head is one the model cannot follow.</li>
+  <li><b>Built in small steps that each produce a file you can open.</b> Fetch, enrich, geocode, build. When something is wrong you can see which file is wrong.</li>
+  <li><b>Looked at the result with real eyes.</b> The page was rendered and inspected before the first commit. Later, when the human opened it in a real browser, the map tiles were blocked by OpenStreetMap's usage policy. The fix was not to find another tile host to depend on but to embed Korea's province outlines in the page so a map always draws, and to treat online tiles as a bonus. Removing a dependency beats swapping it.</li>
+  <li><b>Committed the results, not just the code.</b> The data and the finished page are in the repository, so anyone can see the outcome without running anything.</li>
+  <li><b>Kept the prompts.</b> <code>docs/PROMPT_LOG.md</code>. Six months from now it will explain the repository better than the git history does.</li>
+</ol>
+
+<div class="box">
+  <div class="t">The actual second prompt, verbatim</div>
+  <p class="small">"Let's go with the Korean MFDS open data portal, as he mentioned that as a source, and it will show him how to connect and use an API. What Claude does: I'm not sure of the format of the MFDS, so I'll rely on your judgement to create a simple, yet useful demonstration that is not replicated on the MFDS site. Perhaps a simplified search tool, or something along that line? Maybe even with an integrated map of events/problems/etc? And yes, Hangul and English easily switchable, please."</p>
+  <p class="small">Notice: no technical vocabulary at all. Context, one decision, one explicit delegation, two soft suggestions, one hard requirement.</p>
+</div>
+</section>
+
+<section>
+<h2>6. Setting up your computer</h2>
+<p>Allow one evening. Every step has a check so you know it worked before moving on. Commands are shown for macOS (Terminal) and Windows (PowerShell); use the column for your machine. If a step fails, Section 10 has the common causes, and this is also the chapter to hand to a partner.</p>
+
+<ol class="steps">
+  <li><b>Open a terminal.</b> macOS: press <kbd>⌘ Space</kbd>, type <i>Terminal</i>, press Enter. Windows: press <kbd>⊞</kbd>, type <i>PowerShell</i>, press Enter. You will type commands into this window and press Enter after each one.</li>
+  <li><b>Install Git.</b> macOS: type <code>git --version</code>; if a dialog offers to install developer tools, accept it, wait, then run the command again. Windows: download and install from <b>git-scm.com</b>, accepting the defaults, then close and reopen PowerShell.<br><span class="check">Check:</span> <code>git --version</code> prints a version number.</li>
+  <li><b>Install Python 3.10 or newer.</b> Both platforms: download the current release from <b>python.org/downloads</b> and install it. On Windows, tick <i>"Add python.exe to PATH"</i> on the first installer screen. Close and reopen the terminal afterwards.<br><span class="check">Check:</span> macOS <code>python3 --version</code>, Windows <code>py -3 --version</code>, prints 3.10 or higher.</li>
+  <li><b>Install Claude Code.</b> macOS: <code>curl -fsSL https://claude.ai/install.sh | bash</code>. Windows PowerShell: <code>irm https://claude.ai/install.ps1 | iex</code>. Close and reopen the terminal.<br><span class="check">Check:</span> <code>claude --version</code> prints a version.</li>
+  <li><b>Sign in to Claude Code.</b> Type <code>claude</code> and press Enter. A browser window opens; sign in with a Claude account that has a <b>Pro or Max</b> subscription (the free plan does not include Claude Code). If you would rather pay per use, skip the browser sign-in and instead set the API key from Section 7 as an environment variable; Claude Code will use it. Type <code>/exit</code> to leave.<br><span class="check">Check:</span> <code>claude doctor</code> reports no problems.</li>
+  <li><b>Get the project.</b> Choose a folder for your work, go there, and clone the repository:
+<pre><code>cd ~/Documents                       (Windows: cd $HOME\Documents)
+git clone https://github.com/robertdcurrier/korean_food_safety.git
+cd korean_food_safety</code></pre>
+  <span class="check">Check:</span> <code>ls</code> (Windows <code>dir</code>) lists <code>PLAN.md</code>, <code>CLAUDE.md</code>, <code>src</code>, <code>output</code>.</li>
+  <li><b>Create a private Python environment and install the project into it.</b> This keeps the project's libraries separate from everything else on your machine.
+<table>
+  <tr><th>macOS</th><th>Windows</th></tr>
+  <tr><td><code>python3 -m venv .venv</code><br><code>source .venv/bin/activate</code><br><code>pip install -e .</code></td>
+      <td><code>py -3 -m venv .venv</code><br><code>.venv\Scripts\activate</code><br><code>pip install -e .</code></td></tr>
+</table>
+  Your prompt now starts with <code>(.venv)</code>. You must run the <i>activate</i> line again every time you open a new terminal for this project.<br>
+  <span class="check">Check:</span> <code>python -m unittest discover -s tests</code> ends with <code>OK</code>.</li>
+  <li><b>Run the whole pipeline with no keys.</b>
+<pre><code>python -m kfs all</code></pre>
+  You will see it fetch five sample rows per service, say that it is skipping enrichment because there is no Anthropic key, geocode six districts, and build the page.<br>
+  <span class="check">Check:</span> the last line says <code>open .../output/index.html</code>.</li>
+  <li><b>Open the result.</b> macOS: <code>open output/index.html</code>. Windows: <code>start output\index.html</code>. Or find the file in Finder or Explorer and double-click it.<br><span class="check">Check:</span> a page titled K-식품안전 워치 with ten cases, a map of Korea with markers, and a working English button. The severity badges all say 미평가 / Not rated: that is correct, because no AI has run yet.</li>
+</ol>
+<div class="box warn">
+  <div class="t">If the map area is blank or grey with no outlines</div>
+  <p>Your browser may be blocking local files from loading scripts. Try a different browser (Chrome, Edge, Firefox and Safari all work), and make sure you are connected to the internet so the map library can load. Province outlines are inside the file and need no connection; street tiles do.</p>
+</div>
+</section>
+
+<section>
+<h2>7. Getting your two keys</h2>
+<p>A key is a long secret string that tells a service who is asking. This project uses two, and both go into one small text file called <code>.env</code> in the project folder. Git is configured never to upload that file.</p>
+
+<div class="box warn">
+  <div class="t">Three rules for every key</div>
+  <ol>
+    <li>Copy it once, at creation, into <code>.env</code>. Most sites show it only once.</li>
+    <li>Never paste it into chat, email, a slide, a screenshot, or any file that is committed to Git.</li>
+    <li>If you think it has leaked, delete it on the site and make a new one. Keys are free to replace.</li>
+  </ol>
+</div>
+
+<h3>7a. The Anthropic API key (unlocks the AI enrichment)</h3>
+<ol class="steps">
+  <li><b>Create a Console account.</b> Go to <b>platform.claude.com</b> and sign up or sign in. This is the developer console, separate from the claude.ai chat app, and a Pro subscription does <i>not</i> include API credit.</li>
+  <li><b>Add credit.</b> Open <b>Settings → Billing</b> and add a payment method or buy a small amount of prepaid credit. US$5 is plenty for everything in this guide; the full dataset costs about US$9 to enrich once.</li>
+  <li><b>Create the key.</b> Open <b>Settings → API keys → Create key</b>. Give it a name such as <i>kfs-laptop</i> and, if offered, an expiry date. The key starts with <code>sk-ant-</code> and is shown once. Copy it now.</li>
+  <li><b>Put it in <code>.env</code>.</b> In the project folder, copy the example file and edit it:
+<pre><code>cp .env.example .env         (Windows: copy .env.example .env)</code></pre>
+  Open <code>.env</code> in any plain-text editor (TextEdit in plain-text mode, Notepad, or VS Code) and make the first line exactly, with no spaces and no quotes:
+<pre><code>ANTHROPIC_API_KEY=sk-ant-your-key-here</code></pre>
+  <span class="small">The name on the left matters. On the day this was built, the key was pasted in alone, without the <code>ANTHROPIC_API_KEY=</code> part, and the program could not see it. The program now warns about that mistake, but it is the single most common one.</span></li>
+  <li><b>Run the enrichment and rebuild.</b>
+<pre><code>python -m kfs enrich
+python -m kfs build</code></pre>
+  <span class="check">Check:</span> the enrich step reports <code>10/10</code> with a token count. Reload the page: badges now read 높음 / 보통, cases carry an "AI 요약", the hazard chart has several bars, and the map markers are coloured.</li>
+</ol>
+
+<h3>7b. The MFDS 식품안전나라 key (unlocks the full dataset)</h3>
+<p>Without this key you have five records per service. With it, several hundred, and the map and chart become genuinely informative. Registration is designed for Korean residents and uses the usual identity verification, so for you this is the easy key.</p>
+<ol class="steps">
+  <li><b>Go to the portal.</b> <b>www.foodsafetykorea.go.kr/api</b> (식품안전나라 → 공공데이터활용).</li>
+  <li><b>Sign up and log in.</b> 회원가입, then 로그인. The site states that both are required before any Open-API use.</li>
+  <li><b>Find the services.</b> Click <b>데이터공개</b>, then any of 분류별, 제공기관별 or 유형별. Tick the box for <b>회수·판매중지 정보 (I0490)</b> and for <b>검사부적합(국내) (I2620)</b>. You can tick several at once.</li>
+  <li><b>Apply.</b> Click the <b>Open-API 이용신청</b> button at the top right, agree to the 공공데이터활용 이용약관, and for each service choose a usage type (application development is accurate), individual or corporate, and write a sentence of purpose in 활용목적. The field asks for detail; one honest sentence about a bilingual food-safety research tool is enough. Click <b>신청</b>.</li>
+  <li><b>Collect the key.</b> Approval is automatic. Open <b>인증키 관리 → 인증키 신청 현황</b>. You get one key for your account; it is issued once, and you add more services to it later by repeating step 3 and 4.</li>
+  <li><b>Add it to <code>.env</code></b> as a second line:
+<pre><code>MFDS_API_KEY=your-key-here</code></pre></li>
+  <li><b>Fetch everything, enrich it, rebuild.</b> Enrichment of the full set takes a few minutes and about US$9. If you want to try a smaller slice first, cap it:
+<pre><code>python -m kfs fetch
+python -m kfs enrich --max 50
+python -m kfs geocode
+python -m kfs build</code></pre>
+  Run <code>python -m kfs enrich</code> again later without <code>--max</code> to finish the rest; it only sends records it has not seen.<br>
+  <span class="check">Check:</span> the first tile on the page shows hundreds of cases, the province filter lists most of Korea, and the footer no longer mentions the sample key.</li>
+</ol>
+<p class="small">Daily limits per service apply (I0490: 2000 calls, I2620: 500). One full fetch uses one call per 1000 rows, so this is not a constraint in practice. Each service has its own permitted filter fields; see <code>docs/MFDS_API.md</code>.</p>
+</section>
+
+<section>
+<h2>8. Working with Claude Code on this project</h2>
+<p>This is where the method becomes a habit. Open a terminal in the project folder, activate the environment, and type <code>claude</code>. You are now in a conversation with the builder, and it has already read <code>CLAUDE.md</code>.</p>
+
+<h3>Your first three prompts</h3>
+<ol>
+  <li><i>Read PLAN.md, CLAUDE.md and docs/METHODOLOGY.md, then explain to me in plain language what this project does and how the pieces fit. Do not change anything.</i></li>
+  <li><i>Show me the system prompt that the enrichment step sends to Claude, and the ten hazard categories. I am a food safety scientist; I want to review them.</i></li>
+  <li><i>Open the page in my browser.</i></li>
+</ol>
+<p>Nothing was built yet, and you already know more about the repository than most people who clone a project ever do.</p>
+
+<h3>A template for asking for changes</h3>
+<div class="box">
+  <div class="t">Context · Goal · Constraints · Ask</div>
+  <p><b>Context.</b> Who you are and what the repo is. One or two sentences, or "you have already read PLAN.md and CLAUDE.md".<br>
+  <b>Goal.</b> One sentence. What will be true when this is done.<br>
+  <b>Constraints.</b> What must not break: the no-keys path, the bilingual labels, the tests, the 79-column rule.<br>
+  <b>Ask.</b> "Report back with a plan before changing code." Then, after you agree, "go ahead".</p>
+</div>
+<p>Example, for the first exercise in Section 9:</p>
+<div class="quote">I am a food safety scientist learning to work with you on this repository; you have read PLAN.md and CLAUDE.md. I want to add the MFDS administrative-dispositions service I2630 (행정처분) as a third source alongside recalls and inspections, so that enforcement actions appear on the same map and list. Keep the no-keys path working, keep every label bilingual, keep the tests passing, and update PLAN.md and docs/MFDS_API.md to match. Before you change any code, fetch a few real I2630 rows with the sample key, show me the fields, and give me a short plan.</div>
+
+<h3>Reviewing what it did</h3>
+<ul>
+  <li><b>Read the summary it gives you.</b> It should say what changed and what it verified. If it says tests pass, you may ask it to show you the output.</li>
+  <li><b>Look at the diff.</b> Ask: <i>show me a summary of every file you changed and why.</i> You do not need to read code to notice when a change touched something unrelated.</li>
+  <li><b>Run it yourself.</b> <code>python -m kfs build</code> and open the page. Your eyes are the final test, and in this project they are the expert's eyes.</li>
+  <li><b>Commit when happy.</b> Ask: <i>commit this with a clear message.</i> Git keeps every version, so nothing is ever lost.</li>
+</ul>
+
+<h3>When it goes wrong</h3>
+<p>Paste the error message, all of it, and say what you were doing. "I ran python -m kfs enrich and got this:" followed by the text is a complete bug report. Do not paraphrase errors. Do not retype them. Copy and paste.</p>
+
+<div class="box lesson">
+  <div class="t">A habit that pays for itself</div>
+  <p>End every working session with: <i>Update PLAN.md with what we decided today, add today's prompts to docs/PROMPT_LOG.md, and commit.</i> The repository then explains itself to your future self, your partner, and the next version of Claude.</p>
+</div>
+</section>
+
+<section>
+<h2>9. Exercises, in order of difficulty</h2>
+<p>Each one is a complete conversation with Claude Code using the template above. The first two are mostly the builder's work; the last two are mostly yours.</p>
+<ol class="steps">
+  <li><b>Add a third source.</b> Service I2630, 행정처분, administrative dispositions. It has the same address field, so the map and geocoder already work. Mostly plumbing; a good first exercise because the shape of the change is already visible in the code for the other two services.</li>
+  <li><b>Add a date-range filter to the page.</b> The MFDS API accepts a <code>CRET_DTM</code> filter and the records already carry a clean date. Teaches how a change flows from API to template.</li>
+  <li><b>Street-level map points.</b> Replace the free OpenStreetMap geocoder with the Kakao Local API, which needs a free Korean developer key and returns exact coordinates. Teaches swapping one external dependency for another behind the same interface.</li>
+  <li><b>A weekly bilingual digest.</b> Ask Claude, from the enriched records, to write one paragraph at the top of the page: what happened this week, what mattered, in both languages. Teaches a second, different use of the API in the same app, and raises the question of what "mattered" means, which is yours to answer.</li>
+  <li><b>An evaluation.</b> Take twenty records. Without looking at the AI's answers, write your own hazard category and severity for each. Then compare. Where you disagree, decide whether the rubric in the system prompt is wrong, the model is wrong, or you were. Tighten the prompt and re-run those twenty (delete their entries from <code>data/enriched.json</code> first). <b>This is the exercise that turns a demo into a tool, and no one but a domain expert can do it.</b></li>
+</ol>
+</section>
+
+<section>
+<h2>10. When something goes wrong</h2>
+<table>
+  <tr><th style="width:38%">Symptom</th><th>Likely cause and fix</th></tr>
+  <tr><td><code>command not found: python</code> or <code>git</code> or <code>claude</code></td><td>Not installed, or the terminal was open before you installed it. Close and reopen the terminal. On Windows make sure Python was installed with "Add to PATH".</td></tr>
+  <tr><td><code>No module named kfs</code></td><td>The environment is not active. Run the <i>activate</i> line from Section 6 step 7, in the project folder, then try again.</td></tr>
+  <tr><td>enrich says <i>no Anthropic credential found</i> although you set one</td><td>Check <code>.env</code> is in the project folder (not in <code>src</code>), is named exactly <code>.env</code>, and the line reads <code>ANTHROPIC_API_KEY=sk-ant-...</code> with no spaces, quotes or leading <code>export</code>.</td></tr>
+  <tr><td>enrich fails with an authentication or credit error</td><td>The key was mistyped, has expired, or the Console has no credit. Make a new key and check Settings → Billing.</td></tr>
+  <tr><td>fetch returns only five rows per service with a key set</td><td>The MFDS key was not read or the service was not applied for. Confirm the <code>.env</code> line, and on the portal confirm both I0490 and I2620 appear under 인증키 신청 현황.</td></tr>
+  <tr><td>fetch reports <code>INFO-100</code> or <code>INFO-300</code></td><td>Key not registered or invalid. Copy it again from 인증키 신청 현황.</td></tr>
+  <tr><td>Map shows outlines but no street detail</td><td>The tile server was unreachable or refused the request; the page dropped it on purpose and kept the outlines. The data is unaffected.</td></tr>
+  <tr><td>Map shows "Access blocked" tiles</td><td>An old copy of the page from before 9 Oct 2026. Run <code>git pull</code> and <code>python -m kfs build</code>.</td></tr>
+  <tr><td>Labels on the page look like odd English ("height", "commonly")</td><td>Your browser auto-translated the Korean. The page now asks browsers not to; if it persists, turn off translation for local files. Use the page's own English button.</td></tr>
+  <tr><td>Tests fail after a change Claude Code made</td><td>Paste the failing output back to Claude Code and ask it to fix the cause, not the test.</td></tr>
+  <tr><td>Anything else</td><td>Copy the whole error, open <code>claude</code> in the project, paste it, say what you ran.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>11. Glossary</h2>
+<dl class="gloss">
+  <dt>Terminal</dt><dd>A window where you type commands instead of clicking. Terminal on macOS, PowerShell on Windows.</dd>
+  <dt>Repository (repo)</dt><dd>A project folder whose entire history is tracked by Git. <code>git clone</code> copies one to your machine.</dd>
+  <dt>Commit / push</dt><dd>Save a named snapshot of the repo / upload snapshots to GitHub.</dd>
+  <dt>Python</dt><dd>The programming language the pipeline is written in.</dd>
+  <dt>Virtual environment (.venv)</dt><dd>A private folder of Python libraries for one project, so projects do not interfere.</dd>
+  <dt>API</dt><dd>A way for programs to ask a service for data over the internet, using a URL instead of a web page. The MFDS API answers with JSON; the Claude API answers with text or JSON.</dd>
+  <dt>Endpoint</dt><dd>One specific URL an API answers at.</dd>
+  <dt>Key (API key, 인증키)</dt><dd>A secret string that identifies you to an API. Lives in <code>.env</code>, nowhere else.</dd>
+  <dt>JSON</dt><dd>A plain-text format for structured data that both humans and programs can read. Every file in <code>data/</code> is JSON.</dd>
+  <dt>Token</dt><dd>The unit AI usage is billed in; roughly three quarters of a word in English, less in Korean. Ten records cost about seven thousand.</dd>
+  <dt>Prompt / system prompt</dt><dd>The text you send to a model. The system prompt is the standing instruction that frames every request.</dd>
+  <dt>Structured output</dt><dd>Asking the model to answer in an exact JSON shape rather than prose, so the program never has to interpret free text.</dd>
+  <dt>Model</dt><dd>A specific version of Claude. This project uses Claude Opus 5.5 (<code>claude-opus-5-5</code>) by default; change it with <code>KFS_MODEL</code> in <code>.env</code>.</dd>
+  <dt>Cache</dt><dd>Saved answers so the same question is never paid for twice. <code>data/enriched.json</code> and <code>data/geocache.json</code>.</dd>
+  <dt>Geocoding</dt><dd>Turning an address into latitude and longitude.</dd>
+  <dt>Claude Code</dt><dd>The builder: Claude running as a tool on your computer that reads, writes, and runs things on your instruction.</dd>
+  <dt>Claude API</dt><dd>The worker: Claude on Anthropic's servers, called by your program with a key.</dd>
+</dl>
+<p class="small" style="margin-top:18pt">Sources and attributions. Data: 식품의약품안전처 식품안전나라 공공데이터. Province boundaries: KOSTAT via the southkorea-maps project. Map tiles: Esri World Street Map. Map library: Leaflet. Model: Claude Opus 5.5 by Anthropic. This guide was drafted by Claude Code from the session that built the repository and reviewed by its author.</p>
+</section>
+
+</body>
+</html>

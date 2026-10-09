@@ -48,6 +48,37 @@ Produced, in order:
 5. A first full run with no keys, a headless Chrome render, docs,
    and the public repo.
 
+## 3. The map was not showing
+
+> So where is the map?
+
+Then a screenshot of OpenStreetMap "Access blocked" tiles.
+
+Produced: a diagnosis (OSM refuses pages opened from the file
+system; the browser was also auto-translating the Korean UI), a
+first fix that failed (CARTO basemaps now need a key), and the
+final fix: province outlines embedded in the page, Esri tiles on
+top with automatic fallback, auto-translate disabled. Lesson
+recorded in the guide: remove a dependency rather than swap it.
+
+## 4. A guide for a non-coder
+
+> Now, how about a step-by-step PDF, of our process, for someone
+> that really isn't a coder. He's a smart person, but has limited
+> development experience. I suggested he find a gen MZ to partner
+> with, as this would be a trivial task for them, allowing him to
+> focus on the content and his SME. That's a key lesson I want to
+> convey. Nevertheless, instructions for getting and installing an
+> Anthropic key and the other key (Korean Food Safety) need to
+> included. [...] we need to explain what both Claude instances do:
+> Claude Code, for building the app, and what the Claude API is
+> being called on to produce.
+
+Produced: `docs/guide/guide.html` and the rendered
+`docs/K-Food-Safety-Watch-Guide.pdf`, after fetching the MFDS
+portal's own key-application instructions and the current Claude
+Code and Console steps.
+
 ## Prompts used inside the app
 
 The system prompt Claude receives for each batch of records is in

@@ -112,3 +112,15 @@ the git history does.
    the page, built from the enriched records.
 5. Write an eval: twenty records with a scientist's own hazard and
    severity labels, and measure agreement with the model.
+
+## Regenerating the PDF guide
+
+The guide is written as print-styled HTML so Korean text and the
+screenshots render without extra fonts or libraries:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless=new --disable-gpu --no-pdf-header-footer \
+  --print-to-pdf="$PWD/docs/K-Food-Safety-Watch-Guide.pdf" \
+  "file://$PWD/docs/guide/guide.html"
+```
