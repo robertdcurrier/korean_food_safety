@@ -88,6 +88,9 @@ so the first `python -m kfs all` works within minutes of cloning.
 
 - [x] Services: I0490 + I2620.
 - [x] Geocoder: Nominatim at district level, cached.
+- [x] Basemap: embedded KOSTAT province outlines, Esri tiles on
+      top with automatic fallback. OSM tiles returned 403 from a
+      file:// page; CARTO now needs a key.
 - [x] Model: claude-opus-5-5 by default, overridable with KFS_MODEL.
 - [ ] Personal MFDS key: needed for the full dataset in the
       committed example output.

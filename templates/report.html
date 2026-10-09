@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>K-Food Safety Watch</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -70,7 +71,7 @@ main { max-width: 1200px; margin: 0 auto; display: grid; gap: 16px; }
 .filters input[type=search] { flex: 1 1 220px; min-width: 0; }
 .grid { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
 @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
-#map { height: 440px; border-radius: 8px; border: 1px solid var(--border); }
+#map { height: 440px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); }
 @media (max-width: 600px) { #map { height: 340px; } }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 13px; color: var(--text-2); }
 .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); }
@@ -147,7 +148,8 @@ footer a { color: var(--accent); }
 </main>
 <footer id="foot"></footer>
 
-<script>const DATA = /*__DATA__*/null;</script>
+<script>const DATA = /*__DATA__*/null;
+const GEO = /*__GEO__*/null;</script>
 <script>
 (function () {
   'use strict';
@@ -267,11 +269,41 @@ footer a { color: var(--accent); }
     });
   }
 
-  let map, layer;
+  let map, layer, tiles, outline, tilesFailed = false;
+  const TILE_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+  const TILE_ATTR = 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors';
+  const GEO_ATTR = 'Boundaries: KOSTAT via southkorea-maps';
+  function isDark() {
+    const t = document.documentElement.dataset.theme;
+    return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function outlineStyle() {
+    // With tiles: a faint stroke only. Without tiles: filled provinces are the map.
+    return tilesFailed
+      ? { color: css('--text-3'), weight: 1, fillColor: css('--surface-2'), fillOpacity: 1 }
+      : { color: css('--text-3'), weight: 1, opacity: .6, fillOpacity: 0 };
+  }
+  function styleOutline() { if (outline) outline.setStyle(outlineStyle()); }
+  function dropTiles() {
+    if (tilesFailed) return;
+    tilesFailed = true;
+    if (tiles) { map.removeLayer(tiles); tiles = null; }
+    $('map').style.background = css('--surface');
+    styleOutline();
+  }
   function ensureMap() {
     if (map || typeof L === 'undefined') return;
     map = L.map('map', { scrollWheelZoom: false }).setView([36.3, 127.8], 7);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
+    if (GEO) {
+      outline = L.geoJSON(GEO, {
+        style: outlineStyle(), attribution: GEO_ATTR,
+        onEachFeature: (f, l) => l.bindTooltip(() => lang === 'en' ? (f.properties.name_eng || f.properties.name) : f.properties.name, { sticky: true })
+      }).addTo(map);
+    }
+    tiles = L.tileLayer(TILE_URL, { maxZoom: 18, attribution: TILE_ATTR });
+    tiles.on('tileerror', dropTiles);
+    tiles.addTo(map);
     layer = L.layerGroup().addTo(map);
   }
   function popup(r) {
@@ -282,11 +314,12 @@ footer a { color: var(--accent); }
   }
   function renderMap(rows) {
     ensureMap(); if (!map) return;
+    styleOutline();
     layer.clearLayers();
     const pts = [];
     rows.filter(r => r.lat != null && r.lon != null).forEach(r => {
       const ll = jitter(r); pts.push(ll);
-      L.circleMarker(ll, { radius: 8, color: '#ffffff', weight: 2, fillColor: sevColor(r.severity), fillOpacity: .9 }).bindPopup(popup(r)).addTo(layer);
+      L.circleMarker(ll, { radius: 8, color: isDark() ? '#1a1a19' : '#ffffff', weight: 2, fillColor: sevColor(r.severity), fillOpacity: .9 }).bindPopup(popup(r)).addTo(layer);
     });
     if (pts.length > 1) map.fitBounds(pts, { padding: [24, 24], maxZoom: 11 });
     else if (pts.length === 1) map.setView(pts[0], 10);

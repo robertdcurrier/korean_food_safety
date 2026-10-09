@@ -21,6 +21,7 @@ RAW = DATA / "raw"
 RECORDS = DATA / "records.json"
 ENRICHED = DATA / "enriched.json"
 GEOCACHE = DATA / "geocache.json"
+PROVINCES = DATA / "korea_provinces.geojson"
 TEMPLATE = ROOT / "templates" / "report.html"
 OUTPUT = ROOT / "output" / "index.html"
 
@@ -86,7 +87,7 @@ def cmd_build(args):
     }
     payload = report.build_payload(records, enriched, meta)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    report.render(TEMPLATE, OUTPUT, payload)
+    report.render(TEMPLATE, OUTPUT, payload, report.load_geojson(PROVINCES))
     print(f"build: {len(records)} records, "
           f"{meta['enriched_count']} enriched -> {OUTPUT}")
     print(f"open {OUTPUT}")

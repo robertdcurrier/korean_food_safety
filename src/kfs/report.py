@@ -11,6 +11,7 @@ import json
 from kfs.mfds import SERVICES
 
 PLACEHOLDER = "/*__DATA__*/null"
+GEO_PLACEHOLDER = "/*__GEO__*/null"
 
 DEFAULTS = {
     "product_en": "", "company_en": "", "reason_en": "",
@@ -44,13 +45,28 @@ def build_payload(records, enriched, meta):
     }
 
 
-def render(template_path, out_path, payload):
+def _embed(text, placeholder, obj):
+    """Replace one placeholder with JSON safe inside a <script> tag."""
+    if placeholder not in text:
+        raise RuntimeError(f"template lacks {placeholder}")
+    blob = json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+    return text.replace(placeholder, blob)
+
+
+def load_geojson(path):
+    """Province outlines; None if the file is missing (map still works)."""
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return json.load(handle)
+    except FileNotFoundError:
+        return None
+
+
+def render(template_path, out_path, payload, geojson=None):
     with open(template_path, encoding="utf-8") as handle:
         template = handle.read()
-    if PLACEHOLDER not in template:
-        raise RuntimeError(f"{template_path} lacks {PLACEHOLDER}")
-    blob = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    html = template.replace(PLACEHOLDER, blob)
+    html = _embed(template, PLACEHOLDER, payload)
+    html = _embed(html, GEO_PLACEHOLDER, geojson)
     with open(out_path, "w", encoding="utf-8") as handle:
         handle.write(html)
     return out_path

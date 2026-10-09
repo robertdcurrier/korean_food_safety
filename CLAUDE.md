@@ -58,3 +58,5 @@ open output/index.html
 - `data/geocache.json` caches district lookups. Delete it to
   re-geocode (about one second per district).
 - AI fields are advisory. The footer of the page says so; keep it.
+- `data/korea_provinces.geojson` is the embedded basemap. Keep it;
+  the map must work with no tile server at all.

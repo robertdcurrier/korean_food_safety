@@ -104,8 +104,13 @@ python -m unittest discover -s tests -v
   an official MFDS determination. Always check the original record.
 - Map points are district centroids, jittered. They show the region
   of the responsible business, not where a product was sold.
-- Data source: 식품의약품안전처 식품안전나라 공공데이터. Map tiles:
-  OpenStreetMap contributors.
+- Data source: 식품의약품안전처 식품안전나라 공공데이터.
+- Map: province outlines from KOSTAT via the southkorea-maps
+  project are embedded in the page, so the map works offline and
+  from the file system. Esri World Street Map tiles are drawn over
+  them when reachable and dropped automatically when not.
+  OpenStreetMap's own tile server was tried first and refused
+  file:// pages with a 403; a useful lesson in reading a policy.
 
 ## Next exercises
 
