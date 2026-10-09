@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K-Food Safety Watch</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f2;
+  --surface: #fcfcfb;
+  --surface-2: #efeeea;
+  --border: #dcdbd6;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --text-3: #7d7c77;
+  --accent: #2a78d6;
+  --accent-soft: #cde2fb;
+  --bar: #2a78d6;
+  --sev-high: #d03b3b;
+  --sev-medium: #ec835a;
+  --sev-low: #fab219;
+  --sev-unknown: #8a8984;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --surface-2: #242423;
+    --border: #353532; --text: #ffffff; --text-2: #c3c2b7; --text-3: #8f8e86;
+    --accent: #3987e5; --accent-soft: #1c3a5f; --bar: #3987e5;
+    --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --surface-2: #242423;
+  --border: #353532; --text: #ffffff; --text-2: #c3c2b7; --text-3: #8f8e86;
+  --accent: #3987e5; --accent-soft: #1c3a5f; --bar: #3987e5;
+  --shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 15px/1.5 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", Segoe UI, Roboto, sans-serif;
+  padding: 0 16px 48px;
+}
+header { max-width: 1200px; margin: 0 auto; padding: 24px 0 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; }
+h1 { font-size: 24px; margin: 0; letter-spacing: -.01em; }
+.sub { margin: 4px 0 0; color: var(--text-2); max-width: 70ch; }
+.controls { display: flex; gap: 8px; }
+button, select, input[type=search] {
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px;
+}
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+main { max-width: 1200px; margin: 0 auto; display: grid; gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); }
+.card h2 { font-size: 16px; margin: 0 0 10px; color: var(--text-2); font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.tile .n { font-size: 28px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile .l { color: var(--text-2); font-size: 13px; margin-top: 2px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters input[type=search] { flex: 1 1 220px; min-width: 0; }
+.grid { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
+@media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+#map { height: 440px; border-radius: 8px; border: 1px solid var(--border); }
+@media (max-width: 600px) { #map { height: 340px; } }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 13px; color: var(--text-2); }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); }
+.bars { display: grid; gap: 7px; }
+.bar-row { display: grid; grid-template-columns: minmax(110px, 38%) 1fr 36px; gap: 8px; align-items: center; font-size: 13px; cursor: pointer; border-radius: 6px; padding: 2px 4px; }
+.bar-row:hover, .bar-row.active { background: var(--surface-2); }
+.bar-row .lbl { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 14px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+.bar-row .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+.note { color: var(--text-3); font-size: 12px; margin-top: 8px; }
+.list { display: grid; gap: 10px; }
+.rec { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.rec .top { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 12.5px; color: var(--text-2); }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); font-weight: 600; color: var(--text); }
+.badge .dot { margin-right: 0; }
+.tag { padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--text); }
+.rec h3 { margin: 6px 0 2px; font-size: 16px; }
+.rec .co { color: var(--text-2); font-size: 13.5px; }
+.rec .reason { margin: 8px 0 0; }
+.rec .ai { margin: 8px 0 0; padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 8px 8px 0; font-size: 14px; }
+.rec .ai .k { color: var(--text-3); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; }
+details { margin-top: 8px; }
+summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0 0; font-size: 13.5px; }
+dt { color: var(--text-3); } dd { margin: 0; overflow-wrap: anywhere; }
+.empty { color: var(--text-3); padding: 24px; text-align: center; }
+.more { justify-self: center; }
+footer { max-width: 1200px; margin: 24px auto 0; color: var(--text-3); font-size: 12.5px; line-height: 1.6; }
+footer a { color: var(--accent); }
+.leaflet-popup-content { font: 13px/1.45 inherit; color: #0b0b0b; }
+.leaflet-popup-content b { font-size: 14px; }
+.sr { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 id="title"></h1>
+    <p class="sub" id="subtitle"></p>
+  </div>
+  <div class="controls">
+    <button id="lang" aria-label="language"></button>
+    <button id="theme" aria-label="theme">◐</button>
+  </div>
+</header>
+<main>
+  <section class="tiles" id="tiles" aria-live="polite"></section>
+  <section class="filters card">
+    <input id="q" type="search" autocomplete="off">
+    <select id="f-source"></select>
+    <select id="f-hazard"></select>
+    <select id="f-severity"></select>
+    <select id="f-sido"></select>
+    <button id="reset"></button>
+  </section>
+  <section class="grid">
+    <div class="card">
+      <h2 id="h-map"></h2>
+      <div id="map" role="img"></div>
+      <div class="legend" id="legend"></div>
+      <p class="note" id="map-note"></p>
+    </div>
+    <div class="card">
+      <h2 id="h-haz"></h2>
+      <div class="bars" id="bars"></div>
+      <p class="note" id="bars-note"></p>
+    </div>
+  </section>
+  <section class="card">
+    <h2><span id="h-list"></span> <span id="count"></span></h2>
+    <div class="list" id="list"></div>
+  </section>
+</main>
+<footer id="foot"></footer>
+
+<script>const DATA = /*__DATA__*/null;</script>
+<script>
+(function () {
+  'use strict';
+  const T = {
+    ko: {
+      title: 'K-식품안전 워치', subtitle: '식약처 공공데이터(회수·판매중지, 검사부적합)를 한 화면에서 검색하고 지도로 봅니다. 영문 번역과 위해 분류, 심각도는 Claude가 생성한 참고 정보입니다.',
+      lang: 'English', map: '업소 소재지 지도 (시·군·구 단위)', hazards: '위해 유형별 건수', list: '사례 목록',
+      search: '제품명·업소명·사유 검색', allSources: '전체 출처', recall: '회수·판매중지', inspection: '검사부적합',
+      allHazards: '전체 위해 유형', allSev: '전체 심각도', allSido: '전체 지역', reset: '초기화',
+      tiles: { total: '전체 사례', recall: '회수·판매중지', inspection: '검사부적합', high: '심각도 높음', sido: '시·도 수' },
+      sev: { high: '높음', medium: '보통', low: '낮음', unknown: '미평가' },
+      haz: { microbiological: '미생물', chemical_residue: '잔류농약·동물용의약품', heavy_metal: '중금속', foreign_matter: '이물', allergen_labeling: '알레르기 표시', unapproved_ingredient: '사용불가 원료', additive_violation: '식품첨가물 위반', quality_spec: '규격(품질) 부적합', labeling_other: '표시사항 위반', other: '기타', unclassified: '미분류' },
+      aiSummary: 'AI 요약', aiWhy: '심각도 판단 근거', details: '상세 보기', none: '조건에 맞는 사례가 없습니다.', more: '더 보기',
+      d: { company: '업소명', address: '주소', category: '식품유형', date: '등록일', grade: '회수등급', method: '회수방법', item: '검사항목', result: '검사결과', standard: '기준규격', agency: '검사기관', expiry: '소비기한', mfg: '제조일자', report: '품목보고번호', barcode: '바코드', unit: '포장단위' },
+      mapNote: '좌표는 주소의 시·군·구 중심점이며, 겹침을 피하려고 약간 흩뜨렸습니다. 지도에 없는 사례는 주소가 비어 있거나 좌표를 찾지 못한 경우입니다.',
+      barsNote: '막대를 클릭하면 해당 유형으로 필터링됩니다.',
+      foot: (g, m) => `출처: 식품의약품안전처 식품안전나라 공공데이터 (I0490 회수·판매중지, I2620 검사부적합). 생성 ${g}. ` + (m.model ? `번역·분류·요약: ${m.model} (${m.enriched_count}건). ` : 'AI 보강 없이 생성됨. ') + (m.key_mode === 'sample' ? '샘플 인증키 사용: 서비스당 5건만 포함. 개인 인증키를 설정하면 전체 데이터가 들어갑니다. ' : '') + 'AI 생성 내용은 참고용이며 공식 판정이 아닙니다. 원문은 foodsafetykorea.go.kr 에서 확인하세요.',
+      generatedBy: '생성'
+    },
+    en: {
+      title: 'K-Food Safety Watch', subtitle: 'Search and map Korean MFDS enforcement data (recalls, failed inspections) in one place. English translations, hazard classes and severity are advisory and generated by Claude.',
+      lang: '한국어', map: 'Business locations (district level)', hazards: 'Cases by hazard type', list: 'Cases',
+      search: 'Search product, company, reason', allSources: 'All sources', recall: 'Recall / sales stop', inspection: 'Failed inspection',
+      allHazards: 'All hazard types', allSev: 'All severities', allSido: 'All regions', reset: 'Reset',
+      tiles: { total: 'Total cases', recall: 'Recalls', inspection: 'Failed inspections', high: 'High severity', sido: 'Provinces' },
+      sev: { high: 'High', medium: 'Medium', low: 'Low', unknown: 'Not rated' },
+      haz: { microbiological: 'Microbiological', chemical_residue: 'Pesticide / drug residue', heavy_metal: 'Heavy metal', foreign_matter: 'Foreign matter', allergen_labeling: 'Allergen labelling', unapproved_ingredient: 'Unapproved ingredient', additive_violation: 'Additive violation', quality_spec: 'Quality / spec', labeling_other: 'Labelling (other)', other: 'Other', unclassified: 'Unclassified' },
+      aiSummary: 'AI summary', aiWhy: 'Why this severity', details: 'Details', none: 'No cases match these filters.', more: 'Show more',
+      d: { company: 'Company', address: 'Address', category: 'Food type', date: 'Registered', grade: 'Recall grade', method: 'Recall method', item: 'Test item', result: 'Result', standard: 'Standard', agency: 'Testing agency', expiry: 'Use-by', mfg: 'Manufactured', report: 'Product report no.', barcode: 'Barcode', unit: 'Package' },
+      mapNote: 'Points sit at the centre of the address district and are slightly spread to avoid overlap. Cases without a point have no address or no geocode match.',
+      barsNote: 'Click a bar to filter by that hazard type.',
+      foot: (g, m) => `Source: Ministry of Food and Drug Safety open data via foodsafetykorea.go.kr (I0490 recalls, I2620 failed inspections). Generated ${g}. ` + (m.model ? `Translation, classification and summaries by ${m.model} (${m.enriched_count} records). ` : 'Generated without AI enrichment. ') + (m.key_mode === 'sample' ? 'Built with the public sample key: only 5 rows per service. Set a personal MFDS key for the full dataset. ' : '') + 'AI content is advisory and not an official determination. Verify against the original record.',
+      generatedBy: 'Generated'
+    }
+  };
+  const SEV_ORDER = ['high', 'medium', 'low', 'unknown'];
+  const HAZ_ORDER = Object.keys(T.en.haz);
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+  const qs = new URLSearchParams(location.search);
+  let lang = ['ko', 'en'].includes(qs.get('lang')) ? qs.get('lang') : (store.get('kfs.lang') || 'ko');
+  if (['light', 'dark'].includes(qs.get('theme'))) document.documentElement.dataset.theme = qs.get('theme');
+  const theme = store.get('kfs.theme');
+  if (theme && !document.documentElement.dataset.theme) document.documentElement.dataset.theme = theme;
+  const state = { q: '', source: '', hazard: '', severity: '', sido: '', shown: 60 };
+  const recs = (DATA && DATA.records) || [];
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const t = () => T[lang];
+  const pick = (r, k) => (lang === 'en' && r[k + '_en']) ? r[k + '_en'] : (r[k + '_ko'] || r[k + '_en'] || '');
+  const summary = r => lang === 'en' ? r.summary_en : r.summary_ko;
+  const why = r => lang === 'en' ? r.severity_why_en : r.severity_why_ko;
+  const sevColor = s => getComputedStyle(document.documentElement).getPropertyValue('--sev-' + (SEV_ORDER.includes(s) ? s : 'unknown')).trim();
+
+  function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function jitter(r) { const h = hash(r.id); return [r.lat + ((h % 1000) / 1000 - .5) * .06, r.lon + (((h >>> 10) % 1000) / 1000 - .5) * .06]; }
+
+  function filtered() {
+    const q = state.q.trim().toLowerCase();
+    return recs.filter(r => {
+      if (state.source && r.source !== state.source) return false;
+      if (state.hazard && r.hazard !== state.hazard) return false;
+      if (state.severity && r.severity !== state.severity) return false;
+      if (state.sido && r.sido !== state.sido) return false;
+      if (!q) return true;
+      return [r.product_ko, r.product_en, r.company_ko, r.company_en, r.reason_ko, r.reason_en, r.summary_ko, r.summary_en, r.category_ko, r.address_ko]
+        .some(v => v && String(v).toLowerCase().includes(q));
+    });
+  }
+
+  function fillSelect(el, allLabel, options) {
+    const cur = el.value;
+    el.innerHTML = `<option value="">${esc(allLabel)}</option>` + options.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join('');
+    el.value = cur;
+  }
+
+  function renderStatic() {
+    document.documentElement.lang = lang;
+    $('title').textContent = t().title; $('subtitle').textContent = t().subtitle;
+    $('lang').textContent = t().lang; $('h-map').textContent = t().map; $('h-haz').textContent = t().hazards; $('h-list').textContent = t().list;
+    $('q').placeholder = t().search; $('reset').textContent = t().reset;
+    $('map-note').textContent = t().mapNote; $('bars-note').textContent = t().barsNote;
+    fillSelect($('f-source'), t().allSources, [['recall', t().recall], ['inspection', t().inspection]]);
+    const hazPresent = HAZ_ORDER.filter(h => recs.some(r => r.hazard === h));
+    fillSelect($('f-hazard'), t().allHazards, hazPresent.map(h => [h, t().haz[h]]));
+    fillSelect($('f-severity'), t().allSev, SEV_ORDER.filter(s => recs.some(r => r.severity === s)).map(s => [s, t().sev[s]]));
+    const sidos = [...new Set(recs.map(r => r.sido).filter(Boolean))].sort();
+    fillSelect($('f-sido'), t().allSido, sidos.map(s => [s, s]));
+    $('legend').innerHTML = SEV_ORDER.map(s => `<span><i class="dot" style="background:${sevColor(s)}"></i>${esc(t().sev[s])}</span>`).join('');
+    const gen = DATA && DATA.generated ? DATA.generated.replace('T', ' ').slice(0, 16) : '';
+    $('foot').textContent = t().foot(gen, (DATA && DATA.meta) || {});
+  }
+
+  function renderTiles(rows) {
+    const tiles = [
+      ['total', rows.length], ['recall', rows.filter(r => r.source === 'recall').length],
+      ['inspection', rows.filter(r => r.source === 'inspection').length],
+      ['high', rows.filter(r => r.severity === 'high').length],
+      ['sido', new Set(rows.map(r => r.sido).filter(Boolean)).size]
+    ];
+    $('tiles').innerHTML = tiles.map(([k, n]) => `<div class="tile"><div class="n">${n}</div><div class="l">${esc(t().tiles[k])}</div></div>`).join('');
+  }
+
+  function renderBars(rows) {
+    const counts = {};
+    rows.forEach(r => { counts[r.hazard] = (counts[r.hazard] || 0) + 1; });
+    const items = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const max = items.length ? items[0][1] : 1;
+    $('bars').innerHTML = items.length ? items.map(([h, n]) =>
+      `<div class="bar-row${state.hazard === h ? ' active' : ''}" data-h="${esc(h)}" title="${esc(t().haz[h] || h)}: ${n}" role="button" tabindex="0">
+         <span class="lbl">${esc(t().haz[h] || h)}</span>
+         <span class="bar-track"><span class="bar-fill" style="width:${(n / max * 100).toFixed(1)}%"></span></span>
+         <span class="val">${n}</span></div>`).join('') : `<div class="empty">${esc(t().none)}</div>`;
+    $('bars').querySelectorAll('.bar-row').forEach(el => {
+      const go = () => { state.hazard = state.hazard === el.dataset.h ? '' : el.dataset.h; $('f-hazard').value = state.hazard; update(); };
+      el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } };
+    });
+  }
+
+  let map, layer;
+  function ensureMap() {
+    if (map || typeof L === 'undefined') return;
+    map = L.map('map', { scrollWheelZoom: false }).setView([36.3, 127.8], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
+    layer = L.layerGroup().addTo(map);
+  }
+  function popup(r) {
+    const d = t().d;
+    return `<b>${esc(pick(r, 'product'))}</b><br>${esc(pick(r, 'company'))}<br>` +
+      `<span style="color:${sevColor(r.severity)}">●</span> ${esc(t().sev[r.severity] || r.severity)} · ${esc(t().haz[r.hazard] || r.hazard)}<br>` +
+      `${esc(summary(r) || pick(r, 'reason'))}<br><small>${esc(d.address)}: ${esc(r.address_ko)}</small>`;
+  }
+  function renderMap(rows) {
+    ensureMap(); if (!map) return;
+    layer.clearLayers();
+    const pts = [];
+    rows.filter(r => r.lat != null && r.lon != null).forEach(r => {
+      const ll = jitter(r); pts.push(ll);
+      L.circleMarker(ll, { radius: 8, color: '#ffffff', weight: 2, fillColor: sevColor(r.severity), fillOpacity: .9 }).bindPopup(popup(r)).addTo(layer);
+    });
+    if (pts.length > 1) map.fitBounds(pts, { padding: [24, 24], maxZoom: 11 });
+    else if (pts.length === 1) map.setView(pts[0], 10);
+  }
+
+  function detail(r) {
+    const d = t().d;
+    const rows = [
+      [d.company, pick(r, 'company') + (lang === 'en' && r.company_en ? ` (${r.company_ko})` : '')], [d.address, r.address_ko], [d.category, r.category_ko], [d.date, r.date],
+      [d.grade, r.grade], [d.method, r.method_ko], [d.item, r.test_item_ko], [d.result, r.test_result], [d.standard, r.standard], [d.agency, r.agency_ko],
+      [d.mfg, r.mfg_date], [d.expiry, r.expiry], [d.report, r.report_no], [d.barcode, r.barcode], [d.unit, r.unit && r.unit !== '-' ? r.unit : '']
+    ].filter(([, v]) => v);
+    return `<details><summary>${esc(t().details)}</summary><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>`;
+  }
+  function card(r) {
+    const s = summary(r), w = why(r);
+    return `<article class="rec">
+      <div class="top">
+        <span class="badge"><i class="dot" style="background:${sevColor(r.severity)}"></i>${esc(t().sev[r.severity] || r.severity)}</span>
+        <span class="tag">${esc(t().haz[r.hazard] || r.hazard)}</span>
+        <span>${esc(r.source === 'recall' ? t().recall : t().inspection)}</span>
+        <span>${esc(r.date)}</span>
+        <span>${esc([r.sido, r.sigungu].filter(Boolean).join(' '))}</span>
+      </div>
+      <h3>${esc(pick(r, 'product'))}</h3>
+      <div class="co">${esc(pick(r, 'company'))}</div>
+      <p class="reason">${esc(pick(r, 'reason'))}</p>
+      ${s ? `<div class="ai"><div class="k">${esc(t().aiSummary)}</div>${esc(s)}${w ? `<div class="k" style="margin-top:6px">${esc(t().aiWhy)}</div>${esc(w)}` : ''}</div>` : ''}
+      ${detail(r)}
+    </article>`;
+  }
+  function renderList(rows) {
+    $('count').textContent = `(${rows.length})`;
+    const shown = rows.slice(0, state.shown);
+    $('list').innerHTML = shown.length ? shown.map(card).join('') + (rows.length > shown.length ? `<button class="more" id="more">${esc(t().more)} (${rows.length - shown.length})</button>` : '') : `<div class="empty">${esc(t().none)}</div>`;
+    const more = $('more'); if (more) more.onclick = () => { state.shown += 60; renderList(filtered()); };
+  }
+
+  function update() {
+    const rows = filtered();
+    renderTiles(rows); renderBars(rows); renderMap(rows); renderList(rows);
+  }
+
+  $('q').addEventListener('input', e => { state.q = e.target.value; state.shown = 60; update(); });
+  [['f-source', 'source'], ['f-hazard', 'hazard'], ['f-severity', 'severity'], ['f-sido', 'sido']].forEach(([id, k]) => {
+    $(id).addEventListener('change', e => { state[k] = e.target.value; state.shown = 60; update(); });
+  });
+  $('reset').onclick = () => { Object.assign(state, { q: '', source: '', hazard: '', severity: '', sido: '', shown: 60 }); $('q').value = ''; ['f-source', 'f-hazard', 'f-severity', 'f-sido'].forEach(id => { $(id).value = ''; }); update(); };
+  $('lang').onclick = () => { lang = lang === 'ko' ? 'en' : 'ko'; store.set('kfs.lang', lang); renderStatic(); update(); };
+  $('theme').onclick = () => {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const cur = document.documentElement.dataset.theme || (dark ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next; store.set('kfs.theme', next); update();
+  };
+
+  renderStatic(); update();
+})();
+</script>
+</body>
+</html>

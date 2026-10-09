@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kfs"
+version = "0.1.0"
+description = "Korean food safety watch: MFDS open data + Claude + local HTML"
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=1.0",
+    "pydantic>=2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
