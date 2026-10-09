@@ -1,0 +1,122 @@
+{
+ "I0490-3000235627": {
+  "id": "I0490-3000235627",
+  "product_en": "Aloe extract powder",
+  "company_en": "Sungwon FI Co., Ltd.",
+  "reason_en": "Contains aloe parts not permitted as food raw materials (skin, juice, latex)",
+  "summary_ko": "주식회사 성원에프아이의 '알로에 추출물 분말'에 식품원료로 허용되지 않는 알로에 껍질·쥬스·라텍스 부위가 포함되어 회수됩니다.",
+  "summary_en": "Sungwon FI's aloe extract powder is being recalled because it contains aloe skin, juice and latex, which are not permitted as food ingredients.",
+  "hazard": "unapproved_ingredient",
+  "severity": "high",
+  "severity_why_en": "Grade 1 recall; aloe latex contains laxative anthraquinones and is not allowed in food.",
+  "severity_why_ko": "1등급 회수이며, 알로에 라텍스에는 설사를 유발하는 안트라퀴논류가 있어 식품 사용이 금지된 부위입니다."
+ },
+ "I0490-3000235630": {
+  "id": "I0490-3000235630",
+  "product_en": "Aloe extract powder",
+  "company_en": "Taesung Co., Ltd.",
+  "reason_en": "Contains aloe parts not permitted as food raw materials (skin, juice, latex)",
+  "summary_ko": "주식회사 태성의 '알로에 추출물분말'에 식품원료로 허용되지 않는 알로에 껍질·쥬스·라텍스 부위가 포함되어 회수됩니다.",
+  "summary_en": "Taesung's aloe extract powder is being recalled because it contains aloe skin, juice and latex, which are not permitted as food ingredients.",
+  "hazard": "unapproved_ingredient",
+  "severity": "high",
+  "severity_why_en": "Grade 1 recall; aloe latex contains laxative anthraquinones and is not allowed in food.",
+  "severity_why_ko": "1등급 회수이며, 알로에 라텍스에는 설사를 유발하는 안트라퀴논류가 있어 식품 사용이 금지된 부위입니다."
+ },
+ "I0490-3000235613": {
+  "id": "I0490-3000235613",
+  "product_en": "Swordfish S/T No. 2",
+  "company_en": "Osung Seafood Co., Ltd.",
+  "reason_en": "Failed the heavy metal (methylmercury) standard",
+  "summary_ko": "(주)오성씨푸드의 '황새치 S/T 2호'가 메틸수은 기준을 초과하여 회수됩니다.",
+  "summary_en": "Osung Seafood's Swordfish S/T No. 2 is being recalled because its methylmercury level exceeds the legal limit.",
+  "hazard": "heavy_metal",
+  "severity": "medium",
+  "severity_why_en": "Grade 2 recall; the measured methylmercury level is not stated, so the exceedance is treated as moderate.",
+  "severity_why_ko": "2등급 회수이며, 메틸수은 검출량이 공개되지 않아 중간 수준의 초과로 판단했습니다."
+ },
+ "I0490-3000235608": {
+  "id": "I0490-3000235608",
+  "product_en": "Shark",
+  "company_en": "Wawa Foods Co., Ltd.",
+  "reason_en": "Failed the heavy metal (methylmercury) standard",
+  "summary_ko": "(주)와와식품의 '상어'가 메틸수은 기준을 초과하여 회수됩니다.",
+  "summary_en": "Wawa Foods' shark meat is being recalled because its methylmercury level exceeds the legal limit.",
+  "hazard": "heavy_metal",
+  "severity": "medium",
+  "severity_why_en": "Grade 2 recall; the measured methylmercury level is not stated, so the exceedance is treated as moderate.",
+  "severity_why_ko": "2등급 회수이며, 메틸수은 검출량이 공개되지 않아 중간 수준의 초과로 판단했습니다."
+ },
+ "I0490-3000235598": {
+  "id": "I0490-3000235598",
+  "product_en": "Shark",
+  "company_en": "Wawa Foods Co., Ltd.",
+  "reason_en": "Failed the heavy metal (methylmercury) standard",
+  "summary_ko": "(주)와와식품의 '상어'가 메틸수은 기준을 초과하여 회수됩니다.",
+  "summary_en": "Wawa Foods' shark meat is being recalled because its methylmercury level exceeds the legal limit.",
+  "hazard": "heavy_metal",
+  "severity": "medium",
+  "severity_why_en": "Grade 2 recall; the measured methylmercury level is not stated, so the exceedance is treated as moderate.",
+  "severity_why_ko": "2등급 회수이며, 메틸수은 검출량이 공개되지 않아 중간 수준의 초과로 판단했습니다."
+ },
+ "I2620-3000223482": {
+  "id": "I2620-3000223482",
+  "product_en": "Noni powder",
+  "company_en": "Saengsaeng Dream Co., Ltd.",
+  "reason_en": "Metallic foreign matter: 39.84 mg/kg (limit: less than 10.0 mg/kg)",
+  "summary_ko": "주식회사 생생드림의 '노니분말'에서 금속성이물이 39.84 mg/kg 검출되어 기준(10.0 mg/kg 미만)을 약 4배 초과했습니다.",
+  "summary_en": "Saengsaeng Dream's noni powder contained 39.84 mg/kg of metallic foreign matter, about four times the limit of under 10.0 mg/kg.",
+  "hazard": "foreign_matter",
+  "severity": "high",
+  "severity_why_en": "Metal is hard foreign matter; particle size is not stated, so the more cautious severity is chosen for a roughly 4-fold exceedance.",
+  "severity_why_ko": "금속은 단단한 이물이며 입자 크기가 명시되지 않아, 약 4배 초과에 대해 보다 신중하게 높은 위험도로 판단했습니다."
+ },
+ "I2620-3000223485": {
+  "id": "I2620-3000223485",
+  "product_en": "Fingerroot powder",
+  "company_en": "Saengsaeng Dream Co., Ltd.",
+  "reason_en": "Metallic foreign matter: 100.59 mg/kg (limit: less than 10.0 mg/kg)",
+  "summary_ko": "주식회사 생생드림의 '핑거루트분말'에서 금속성이물이 100.59 mg/kg 검출되어 기준(10.0 mg/kg 미만)을 약 10배 초과했습니다.",
+  "summary_en": "Saengsaeng Dream's fingerroot powder contained 100.59 mg/kg of metallic foreign matter, about ten times the limit of under 10.0 mg/kg.",
+  "hazard": "foreign_matter",
+  "severity": "high",
+  "severity_why_en": "Metal is hard foreign matter and the level is about 10 times the limit; particle size is not stated, so the cautious severity is chosen.",
+  "severity_why_ko": "금속은 단단한 이물이며 기준의 약 10배가 검출되었고, 입자 크기가 명시되지 않아 신중하게 높은 위험도로 판단했습니다."
+ },
+ "I2620-3000223496": {
+  "id": "I2620-3000223496",
+  "product_en": "Turmeric powder",
+  "company_en": "Saengsaeng Dream Co., Ltd.",
+  "reason_en": "Metallic foreign matter: 70.19 mg/kg (limit: less than 10.0 mg/kg)",
+  "summary_ko": "주식회사 생생드림의 '강황분말'에서 금속성이물이 70.19 mg/kg 검출되어 기준(10.0 mg/kg 미만)을 약 7배 초과했습니다.",
+  "summary_en": "Saengsaeng Dream's turmeric powder contained 70.19 mg/kg of metallic foreign matter, about seven times the limit of under 10.0 mg/kg.",
+  "hazard": "foreign_matter",
+  "severity": "high",
+  "severity_why_en": "Metal is hard foreign matter and the level is about 7 times the limit; particle size is not stated, so the cautious severity is chosen.",
+  "severity_why_ko": "금속은 단단한 이물이며 기준의 약 7배가 검출되었고, 입자 크기가 명시되지 않아 신중하게 높은 위험도로 판단했습니다."
+ },
+ "I2620-3000224642": {
+  "id": "I2620-3000224642",
+  "product_en": "Dongcho (winter rape greens)",
+  "company_en": "Park *-kyung (individual producer)",
+  "reason_en": "Methabenzthiazuron: 0.06 mg/kg (limit: 0.01 mg/kg)",
+  "summary_ko": "박*경 씨가 생산한 '동초'에서 농약 메타벤즈티아주론이 0.06 mg/kg 검출되어 기준(0.01 mg/kg)을 6배 초과했습니다.",
+  "summary_en": "Dongcho (winter rape greens) from producer Park *-kyung contained the herbicide methabenzthiazuron at 0.06 mg/kg, six times the 0.01 mg/kg limit.",
+  "hazard": "chemical_residue",
+  "severity": "medium",
+  "severity_why_en": "Pesticide residue exceeding the limit (6-fold) is a residue violation; the absolute amount is small, so medium.",
+  "severity_why_ko": "농약 잔류허용기준을 6배 초과한 잔류농약 위반이나 절대 검출량이 적어 중간 위험도로 판단했습니다."
+ },
+ "I2620-3000224675": {
+  "id": "I2620-3000224675",
+  "product_en": "Yeolmu (young radish greens)",
+  "company_en": "Son *-cheol (individual producer)",
+  "reason_en": "Terbufos: 0.22 mg/kg (limit: 0.05 mg/kg or less)",
+  "summary_ko": "손*철 씨가 생산한 '열무'에서 농약 터부포스가 0.22 mg/kg 검출되어 기준(0.05 mg/kg 이하)을 약 4.4배 초과했습니다.",
+  "summary_en": "Young radish greens (yeolmu) from producer Son *-cheol contained the insecticide terbufos at 0.22 mg/kg, about 4.4 times the 0.05 mg/kg limit.",
+  "hazard": "chemical_residue",
+  "severity": "medium",
+  "severity_why_en": "Pesticide residue over the limit (about 4.4-fold); terbufos is a highly toxic organophosphate, but this level is a residue exceedance rather than acute poisoning risk, so medium.",
+  "severity_why_ko": "잔류허용기준을 약 4.4배 초과했으며, 터부포스는 독성이 강한 유기인계 농약이지만 급성 중독 수준이 아닌 잔류 기준 초과로 보아 중간 위험도로 판단했습니다."
+ }
+}

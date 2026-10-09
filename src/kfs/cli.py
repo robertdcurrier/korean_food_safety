@@ -31,7 +31,11 @@ def load_dotenv(path=ROOT / ".env"):
         return
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            print(f"warning: {path.name} line has no NAME=value form; "
+                  f"expected e.g. ANTHROPIC_API_KEY=sk-ant-...")
             continue
         key, value = line.split("=", 1)
         os.environ.setdefault(key.strip(), value.strip())
